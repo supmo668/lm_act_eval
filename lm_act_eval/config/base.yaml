@@ -1,0 +1,3 @@
+eval_steps: 5
+eval_samples: 30
+full_generation_samples: 10

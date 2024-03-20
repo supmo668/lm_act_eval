@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "llm-action-trajectory-eval"
+version = "0.1.0"
+description = "Evaluation Harness for on/off-line llm web actions"
+authors = ["multion_matthew"]
+license = "Apache2.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+poetry = {git = "https://github.com/python-poetry/poetry.git"}
+multion = "0.3.13"
+openai = "1.13.3"
+opencv-python = "4.8.1.78"
+pandas = "2.0.3"
+playwright = "1.37.0"
+llama-index = "0.10.6"
+langchain = "0.0.304"
+langsmith = "0.0.41"
+honeyhive = "0.1.82"
+beautifulsoup4 = "4.12.3"
+Pillow = "10.0.1"
+deepeval = "0.20.90"
+autoevals = "0.0.53"
+ 
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
