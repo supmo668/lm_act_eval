@@ -8,10 +8,10 @@ from beartype import beartype
 from beartype.typing import Dict, List
 from playwright.sync_api import CDPSession, Page
 
-from browser_env.env_config import config as browse_config
+from lm_act_eval.evaluation_harness.evaluators.webarena_rl.browser_env.env_config import config as browse_config
 
 from llms.providers.openai_utils import (
-    generate_from_openai_chat_completion,
+    generate_from_openai_chat_completion
 )
 from .base import PseudoPage
 

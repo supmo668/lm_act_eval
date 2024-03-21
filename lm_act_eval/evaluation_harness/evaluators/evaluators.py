@@ -45,7 +45,7 @@ from evaluation_harness.helper_functions import (
 )
 
 from . import USER_AGENT_HEADERS
-from .base import Evaluator
+from .webarena_rl.base import Evaluator
 
 Trajectory = list[Union[Action, StateInfo]]
 

@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "llm-action-trajectory-eval"
+name = "lm_act_eval"
 version = "0.1.0"
 description = "Evaluation Harness for on/off-line llm web actions"
 authors = ["multion_matthew"]
@@ -8,21 +8,41 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
+# External dependency, directly related to poetry itself
 poetry = {git = "https://github.com/python-poetry/poetry.git"}
+
+# Core dependencies, sorted alphabetically for readability
+beartype = "0.17.2"
+beautifulsoup4 = "4.12.3"
+huggingface-hub = "0.21.4"
+llama-index = "0.10.6"
 multion = "0.3.13"
+numpy = "1.25.2"
 openai = "1.13.3"
 opencv-python = "4.8.1.78"
-pandas = "2.0.3"
-playwright = "1.37.0"
-llama-index = "0.10.6"
-langchain = "0.0.304"
-langsmith = "0.0.41"
-honeyhive = "0.1.82"
-beautifulsoup4 = "4.12.3"
 Pillow = "10.0.1"
-deepeval = "0.20.90"
+playwright = "1.37.0"
+pandas = "2.2.1"
+pydantic = "1.10.14"
+python-dotenv = "1.0.1"
+PyYAML = "6.0.1"
+torch = "2.0.1"
+
+# Webarena
+gymnasium = "0.29.1"
+matplotlib= "3.8.3"
+text-generation = "0.6.1"
+aiolimiter = "1.1.0"
+vertexai = "1.43.0"
+
+# Multion-specific dependencies, sorted alphabetically for readability
 autoevals = "0.0.53"
- 
+braintrust_core = "0.0.26"
+deepeval = "0.20.90"
+honeyhive = "0.1.82"
+langchain = "0.0.304"
+lm_eval = "0.4.2"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
