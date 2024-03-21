@@ -25,6 +25,7 @@ requirements = [
     'python-dotenv==1.0.1',
     'torch==2.0.1',
     "Requests==2.31.0"
+    "wandb==0.16.4"
 ]
 
 webarena_requirements = [
@@ -52,6 +53,9 @@ multion_requirements = [
 test_requirements = ['pytest>=3', ]
 
 setup(
+    name='lm_act_eval',
+    version='0.1.0',
+    packages=['lm_act_eval'],
     author="Matthew M",
     author_email='matthew@multion.ai',
     python_requires='>=3.6',
@@ -67,7 +71,7 @@ setup(
     description="Evaluation for LLM Actions & Trajectories",
     entry_points={
         'console_scripts': [
-            'lm_act_eval=lm_act_eval.cli:main',
+            'lm_act_eval=lm_act_eval.__main__:main',
         ],
     },
     install_requires=requirements,

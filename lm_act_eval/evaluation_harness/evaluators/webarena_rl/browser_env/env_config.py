@@ -2,7 +2,7 @@ import yaml
 import os
 from pydantic import ValidationError
 
-from browser_env.models import Config
+from .models import Config
 
 from dotenv import load_dotenv
 from .constants import BROWSER_INIT_CONFIG

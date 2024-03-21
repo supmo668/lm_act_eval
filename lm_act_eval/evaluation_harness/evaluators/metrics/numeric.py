@@ -4,7 +4,7 @@ from typing import Optional, Union
 from beartype import beartype
 
 from . import USER_AGENT_HEADERS
-from .base import Evaluator, Trajectory
+from ..webarena_rl.base import Evaluator, Trajectory
 
 @beartype
 class NumericEvaluator(Evaluator):

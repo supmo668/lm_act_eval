@@ -38,6 +38,16 @@ def extract_thought(text: str) -> str:
 
 
 def extract_action(text: str) -> str:
+    """
+    Extracts the action from the given text.
+
+    Args:
+        text (str): The text from which the action needs to be extracted.
+
+    Returns:
+        str: The extracted action.
+
+    """
     match = re.search(
         r"(COMMANDS:|ANSWER:|ASK_USER_HELP:)(.*?)(EXPLANATION:|STATUS:|$)",
         text,
@@ -45,7 +55,9 @@ def extract_action(text: str) -> str:
     )
     if not match:
         return ""
-    return clean_extracted_text(match.group(1) + match.group(2))
+    # Modified to return only the command without prefix
+        # e.g. clean_extracted_text(match.group(1) + match.group(2))
+    return clean_extracted_text(match.group(2))
 
 
 def extract_explanation(text: str) -> str:
@@ -86,15 +98,14 @@ class ParseChatCompletion:
         matches = re.findall(pattern, input_str, re.DOTALL)
         return matches
     
-    def parse_as_json(self, s: str) -> json:
+    def parse_as_json(self, s: str, target_field='content') -> json:
         """
         Parse the input string to extract a JSON object. If successful, return the 'content' value from the JSON, or return "Content not provided" if not found. If the parsing fails, attempt to extract the content value using the extract_content_value method. If that also fails, return "NA".
         """
         try:
             d = ast.literal_eval(s)
             json_str = json.dumps(d, indent=4)
-            return json.loads(json_str)[0].get(
-            'content', "Content not provided")
+            return json.loads(json_str)[0][target_field]
         except:
             try:
                 return self._extract_content_value(s)

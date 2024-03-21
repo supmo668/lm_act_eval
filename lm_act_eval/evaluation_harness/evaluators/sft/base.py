@@ -99,8 +99,8 @@ class BaseEvaluator:
         pass
 
 class CSVEvaluator(BaseEvaluator):
-    def __init__(self, config_path):
-        self.config = OmegaConf.load(config_path)
+    def __init__(self, config):
+        self.config = config
         self._register_metrics()
 
     def _register_metrics(self):

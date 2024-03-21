@@ -1,0 +1,4 @@
+gptv:
+  model: gpt-4-vision-preview
+  max_token: 300
+  img_fidelity: high

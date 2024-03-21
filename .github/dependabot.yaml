@@ -1,0 +1,9 @@
+version: 2
+updates:
+  # Enable version updates for pip (Python)
+  - package-ecosystem: "pip"
+    # Look for `requirements.txt` and `requirements/*.txt` files in the repository
+    directory: "/"
+    # Check the pip dependencies for updates daily
+    schedule:
+      interval: "daily"

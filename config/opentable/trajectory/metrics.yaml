@@ -1,0 +1,6 @@
+edit_distance:
+  on: actions_trajectory
+  
+bleu:
+  on: explanation
+  

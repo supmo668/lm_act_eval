@@ -1,5 +1,8 @@
 defaults:
   - base
+  
+format: csv
 
 dataset: opentable
+
 type: trajectories

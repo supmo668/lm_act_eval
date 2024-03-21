@@ -9,9 +9,9 @@ from beartype import beartype
 from PIL import Image
 from playwright.sync_api import CDPSession, Page, ViewportSize
 
-from browser_env.constants import IGNORED_ACTREE_PROPERTIES
-from browser_env.processors.base import ObservationProcessor
-from browser_env.processors.utils import create_empty_metadata, remove_unicode
+from ..constants import IGNORED_ACTREE_PROPERTIES
+from .base import ObservationProcessor
+from .utils import create_empty_metadata, remove_unicode
 from .base import AccessibilityTree
 from .base import (
     IGNORED_ACTREE_PROPERTIES, 

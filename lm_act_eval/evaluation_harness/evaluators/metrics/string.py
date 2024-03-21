@@ -16,11 +16,12 @@ from evaluation_harness.evaluators import (
   evaluator_router
 )
 
-
+from .numeric import NumericEvaluator
 
 
 from . import USER_AGENT_HEADERS
-from .base import Evaluator, Trajectory
+from ..webarena_rl.base import Evaluator, Trajectory
+
 @beartype
 class StringEvaluator(Evaluator):
     """Check whether the answer is correct with:
@@ -28,7 +29,7 @@ class StringEvaluator(Evaluator):
     must include: each phrase in the reference answer must be included in the answer
     fuzzy match: the answer is similar to the reference answer, using LLM judge
     """
-
+    
     @staticmethod
     @beartype
     def clean_answer(answer: str) -> str:

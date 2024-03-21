@@ -12,10 +12,15 @@ import aiolimiter
 import openai
 from openai import AsyncOpenAI, OpenAI
 
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
-aclient = AsyncOpenAI(api_key=os.environ["OPENAI_API_KEY"])
 from tqdm.asyncio import tqdm_asyncio
 
+import warnings
+
+try:
+    client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    aclient = AsyncOpenAI(api_key=os.environ["OPENAI_API_KEY"])
+except KeyError as e:
+    warnings.warn("Please set your OpenAI API key in the environment variable `OPENAI_API_KEY` to use this part of the modules functionality.\n{e}")
 
 def retry_with_exponential_backoff(  # type: ignore
     func,

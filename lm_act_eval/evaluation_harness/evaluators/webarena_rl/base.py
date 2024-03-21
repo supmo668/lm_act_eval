@@ -16,7 +16,8 @@ from ..metrics.numeric import NumericEvaluator
 from ..metrics.image import PageImageEvaluator
 from ..metrics.url import URLExactEvaluator, HTMLContentExactEvaluator
 
-Trajectory = list[Union[Action, StateInfo]]\
+Trajectory = list[Union[Action, StateInfo]]
+
 
 @beartype
 class EvaluatorPartial(object):

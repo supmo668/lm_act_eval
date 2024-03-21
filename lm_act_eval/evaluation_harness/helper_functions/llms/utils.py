@@ -3,16 +3,16 @@ from typing import Any
 
 try:
     from vertexai.preview.generative_models import Image
-    from llms import generate_from_gemini_completion
+    from .providers.gemini_utils import generate_from_gemini_completion
 except:
     print('Google Cloud not set up, skipping import of vertexai.preview.generative_models.Image and llms.generate_from_gemini_completion')
 
-from llms import (
-    generate_from_huggingface_completion,
+from .providers.hf_utils import generate_from_huggingface_completion
+from .providers.openai_utils import (
     generate_from_openai_chat_completion,
-    generate_from_openai_completion,
-    lm_config,
+    generate_from_openai_completion
 )
+from . import lm_config
 
 APIInput = str | list[Any] | dict[str, Any]
 

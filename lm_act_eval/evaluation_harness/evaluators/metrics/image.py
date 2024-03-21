@@ -14,7 +14,7 @@ from evaluation_harness.helper_functions import (
 )
 
 from . import USER_AGENT_HEADERS
-from .base import Evaluator, Trajectory
+from ..webarena_rl.base import Evaluator, Trajectory
 
 @beartype
 class PageImageEvaluator(Evaluator):
