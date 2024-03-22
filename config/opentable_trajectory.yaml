@@ -1,8 +1,8 @@
 defaults:
   - base
+  - metrics@eval_conf: trajectory
+  - comparator@eval_conf: default
   
 format: csv
-
 dataset: opentable
-
-type: trajectories
+type: trajectory

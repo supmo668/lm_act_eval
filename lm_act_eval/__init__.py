@@ -3,5 +3,3 @@
 __author__ = """Matthew M"""
 __email__ = 'matthew@multion.ai'
 __version__ = '0.1.0'
-
-from .evaluation_harness.evaluators import evaluator_registry

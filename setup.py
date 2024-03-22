@@ -23,7 +23,7 @@ requirements = [
     'pydantic==1.10.14',  # Duplicate removed
     'PyYAML==6.0.1',
     'python-dotenv==1.0.1',
-    'torch==2.0.1',
+    'torch==2.2.1',
     "Requests==2.31.0"
     "wandb==0.16.4"
 ]

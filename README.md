@@ -1,6 +1,6 @@
 # LLM Action Evaluation
 
-# Installation
+## Installation
 ```
 pip install -e .
 ```
@@ -14,9 +14,11 @@ or
 ```
 python -m lm_act_eval --help
 ```
+### Set-up tokens
+Set-up tokens according to `.example.env`
 
-# Defining evaluation with Hydra
-## Token 
+## Defining evaluation with Hydra
+
 A config file structure tree looks like the following:
 ``` example file structure
 /config
@@ -35,6 +37,7 @@ format: csv/HF
 dataset: <Name of dataset/project (e.g. Opentable)>
 type: <type (e.g. trajectory)>
 ```
+##
 * `metrics.yaml`
 
 ```
@@ -44,6 +47,7 @@ type: <type (e.g. trajectory)>
 bleu:
   on: explanation
 ```
+##
 * ` comparator.yaml`
 You can add some publicly available model that're readily available to compare to your model's performance.
 ```

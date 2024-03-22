@@ -7,7 +7,7 @@ from playwright.sync_api import CDPSession, Page
 
 from .browser_env.actions import Action
 from .browser_env.utils import StateInfo
-from evaluation_harness.helper_functions import PseudoPage
+from lm_act_eval.evaluation_harness.helper_functions import PseudoPage
 
 from typing import Union
 

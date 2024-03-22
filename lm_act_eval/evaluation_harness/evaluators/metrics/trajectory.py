@@ -17,8 +17,10 @@ from evaluation_harness.helper_functions import (
     llm_fuzzy_match,
     llm_ua_match,
 )
+from . import metric_registry
 
-class NumericEvaluator(Evaluator):
+@metric_registry.register('trajectory')
+class TrajectoryEvaluator(Evaluator):
     """Check if the numerical relationship is correct"""
     levenshtein_comparator = Levenshtein()
     @staticmethod
@@ -34,14 +36,14 @@ class NumericEvaluator(Evaluator):
       Returns:
         float: The edit distance between the reference and predicted strings.
       """
-      return NumericEvaluator.levenshtein_comparator(ref, pred).score
+      return TrajectoryEvaluator.levenshtein_comparator(ref, pred).score
 
     def __call__(
         self,
         trajectory: Tuple[List[List], List[List]],
         metrics: list,
-        page: Page | PseudoPage | None = None,
-        client: CDPSession | None = None,
+        # page: Page | PseudoPage | None = None,
+        # client: CDPSession | None = None,
       ) -> Dict[str, int]:
         """
         Call method to calculate the score based on the given trajectory and metrics. 

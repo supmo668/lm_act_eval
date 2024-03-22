@@ -1,10 +1,9 @@
 
+from .base import CSVEvaluator
+from lm_act_eval.evaluation_harness.registry import evaluator_registry
 
-class CSVEvaluator(BaseEvaluator):
-    def __init__(self, config_path):
-        self.config = OmegaConf.load(config_path)
-        self._register_metrics()
-
+@evaluator_registry.register("trajectory")
+class CSVTrajectoryEvaluator(CSVEvaluator):
     def _register_metrics(self):
         # Placeholder for metric function registration
         # Example: self.metric_registry.register("accuracy", accuracy_function)
