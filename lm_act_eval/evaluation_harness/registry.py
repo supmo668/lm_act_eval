@@ -1,36 +1,37 @@
 
 from pyclbr import Class
-from typing import Callable, Union, Type
+from typing import Callable, Union, Type, List
+
+import warnings
 
 class Registry(dict):
-    def register(self, name):
-        """
-        Registers a function with the given name in the dictionary.
-
-        Parameters:
-            name (str): The name of the function to be registered.
-
-        Returns:
-            function: The registered function/class
-
-        """
-        def inner(func: Class | Callable):
-            self[name] = func
+    # Keeping a class-level registry to track all registered items
+    _registry = {}
+    
+    def register(self, name: str) -> Callable:
+        def inner(func: Union[Type, Callable]) -> Union[Type, Callable]:
+            self.__class__._registry[name] = func
+            self[name] = func  # Keep instance-specific registration as well
             return func
         return inner
 
-    def get(self, name):
-        try:
-            return self[name]
-        except KeyError:
-            raise Exception(f"{name} don't exist in registry.")
+    def get(self, name: Union[str, List[str]]):
+        if isinstance(name, list):
+            # Prepare a result dictionary for names that exist
+            result = {}
+            for n in name:
+                try:
+                    result[n] = self[n]
+                except KeyError:
+                    warnings.warn(f"{n} doesn't exist in registry.")
+            return result
+        else:
+            # Single name case, as before
+            try:
+                return self[name]
+            except KeyError:
+                raise Exception(f"{name} doesn't exist in registry.")
 
     @classmethod
     def list_registered(cls):
-        """
-        Lists all registered names in the registry.
-
-        Returns:
-            list: A list of names of all registered functions or classes.
-        """
-        return list(cls.keys())
+        return list(cls._registry.keys())
