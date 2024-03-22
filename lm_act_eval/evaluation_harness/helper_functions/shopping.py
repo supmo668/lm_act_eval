@@ -7,7 +7,7 @@ from beartype import beartype
 from beartype.typing import Dict, List
 from playwright.sync_api import Page
 
-from browser_env.env_config import config as browse_config
+from lm_act_eval.evaluation_harness.evaluators.webarena_rl.browser_env.env_config import config as browse_config
 
 from .base import PseudoPage
 

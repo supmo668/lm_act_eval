@@ -1,7 +1,7 @@
 from typing import Any
 from beartype import beartype
 
-from llms.providers.openai_utils import (
+from .llms.providers.openai_utils import (
     generate_from_openai_chat_completion,
 )
 

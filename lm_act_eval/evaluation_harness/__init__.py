@@ -1,4 +1,4 @@
-from .evaluators import *
+
 from .helper_functions import (
     get_query_text,
     get_query_text_lowercase,
@@ -18,6 +18,4 @@ from .helper_functions import (
     shopping_get_sku_latest_review_text,
 )
 
-from ..registry import Registry
-
-evaluator_registry = Registry()
+from .evaluators.metrics import metric_registry
