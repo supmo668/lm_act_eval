@@ -1,5 +1,6 @@
 from sqlalchemy import desc
 from tqdm import tqdm
+import warnings 
 
 from transformers import pipeline, PreTrainedTokenizerBase
 
@@ -8,6 +9,12 @@ from datasets import Dataset
 import pandas as pd
 import torch
 
+from torch.utils.data.dataloader import default_collate
+
+
+def custom_collate(batch):
+    batch = [item for item in batch if item is not None]  # Filter out None values
+    return default_collate(batch)
 
 def text_from_prompt_and_action(
     prompt: str, action: str, tokenizer: PreTrainedTokenizerBase
@@ -67,9 +74,12 @@ def generate_text_and_merge(
     Returns:
         pandas.DataFrame: The original DataFrame with an additional column containing the generated text.
     """
-    text_dataset = Dataset.from_pandas(pd.DataFrame(df[input_text_column]))
-    text_dataloader = DataLoader(text_dataset, batch_size=batch_size)
-
+    df = df.copy().dropna(subset=[input_text_column])
+    if len(df) != len(df):
+        warnings.warn(f"{len(df) - len(df)} rows dropped due to NaN in {input_text_column}.")
+    text_dataset = Dataset.from_pandas(df[[input_text_column]])
+    text_dataloader = DataLoader(text_dataset, batch_size=batch_size, collate_fn=custom_collate)
+    
     generated_texts = []
 
     model.eval()

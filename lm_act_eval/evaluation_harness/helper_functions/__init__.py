@@ -10,7 +10,8 @@ from .reddit import (
   reddit_get_latest_comment_content_by_username,
   reddit_get_latest_comment_obj_by_username,
   reddit_get_parent_comment_username_of_latest_comment_by_username,
-  reddit_get_post_comment_tree
+  reddit_get_post_comment_tree,
+  reddit_get_post_url
 )
 from .shopping import (
   shopping_get_latest_order_url, shopping_get_num_reviews,

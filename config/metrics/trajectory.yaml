@@ -1,5 +1,5 @@
 metrics:
   edit_distance:
-    on: actions_trajectory
+    on: actions
   bleu:
     on: explanation

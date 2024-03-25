@@ -37,8 +37,8 @@ def main(model_name, csv_path, input_text_column, max_length):
     
     # log
         # Log the entire DataFrame to wandb
-    # wandb.log({
-    #   "final_dataframe": wandb.Table(dataframe=df_merged)})
+    wandb.log({
+      "final_dataframe": wandb.Table(dataframe=df_merged)})
     
     # save the merged DataFrame to a new CSV file
     df_merged.to_csv(

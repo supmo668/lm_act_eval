@@ -7,14 +7,14 @@ from transformers import (
     Blip2ForConditionalGeneration,
     Blip2Processor,
 )
-from evaluation_harness.vision import GPTVVisionAPIPipeline
+from ...openai.vision import GPTV
 
 def get_captioning_fn(
     device, dtype, model_name: str = "Salesforce/blip2-flan-t5-xl"
 ) -> callable:
     if model_name.lower().starstwith("api"):
         if "gpt-vision" in model_name:
-            captioning_api = GPTVVisionAPIPipeline()
+            captioning_api = GPTV()
     else:
         
         if "blip2" in model_name:

@@ -8,7 +8,7 @@ from beartype import beartype
 from PIL import Image
 from playwright.sync_api import CDPSession, Page
 
-from evaluation_harness import image_utils
+from lm_act_eval.evaluation_harness.evaluators.webarena_rl import image_utils
 from evaluation_harness.helper_functions import (
     PseudoPage
 )

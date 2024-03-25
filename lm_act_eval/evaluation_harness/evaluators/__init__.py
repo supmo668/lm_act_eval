@@ -7,7 +7,10 @@ USER_AGENT_HEADERS = {
     "Connection": "keep-alive"
 }
 
-from lm_act_eval.evaluation_harness.registry import Registry
-from .metrics import metric_registry
 
-evaluator_registry = Registry()
+# import all modules from 
+from .metrics import metric_registry
+from .common import evaluator_registry
+
+
+__all__ = ["evaluator_registry", "metric_registry"]

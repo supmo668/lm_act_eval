@@ -35,3 +35,6 @@ class Registry(dict):
     @classmethod
     def list_registered(cls):
         return list(cls._registry.keys())
+    
+metric_registry = Registry()
+evaluator_registry = Registry()

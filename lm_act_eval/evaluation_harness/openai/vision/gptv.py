@@ -9,15 +9,17 @@ import mimetypes
 from openai import OpenAI
 from PIL import Image
 
-from finetuning.finetuning.evaluate.evaluators.vision.base import Pipeline
-from finetuning.finetuning.evaluate.evaluators.vision.constants import ENDPOINTS
+from .base import Pipeline
+from .constants import ENDPOINTS
 
 from pathlib import Path
 
-from finetuning.finetuning.evaluate.evaluators.vision.config import gptv_config
+from .config import gptv_config
 
 class GPTV(Pipeline):
     def __init__(self, config: dict | gptv_config):
+        if isinstance(config, dict):
+            config = gptv_config(**config)
         try:
             self.api_key = os.environ["OPENAI_API_KEY"]
             self.openai_client = OpenAI()

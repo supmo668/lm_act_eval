@@ -21,9 +21,7 @@ from datasets import Dataset
 import wandb
 
 from .utils import generate_completions
-from ..metrics import Action as ActionEvaluator
-
-from . import evaluator_registry
+# from ..metrics import Action as ActionEvaluator
 
 from lm_act_eval.evaluation_harness.constants import CACHE_DIR
 

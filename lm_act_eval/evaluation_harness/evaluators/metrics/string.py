@@ -7,7 +7,7 @@ from beartype import beartype
 from nltk.tokenize import word_tokenize  # type: ignore
 from playwright.sync_api import CDPSession, Page
 
-from evaluation_harness.helper_functions import (
+from lm_act_eval.evaluation_harness.helper_functions import (
     PseudoPage,
     llm_fuzzy_match,
     llm_ua_match,
