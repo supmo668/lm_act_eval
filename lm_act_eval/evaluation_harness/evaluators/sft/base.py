@@ -25,8 +25,6 @@ from .utils import generate_completions
 
 from lm_act_eval.evaluation_harness.constants import CACHE_DIR
 
-from omegaconf import OmegaConf
-from .. import metric_registry
 
 class BaseEvaluator:
     @abstractmethod
@@ -59,11 +57,9 @@ class CSVEvaluator(BaseEvaluator):
         )
         self._get_metrics()
 
-    def _get_metrics(self, metrics):
+    def _get_metrics(self, metrics: Dict[str, callable]) -> Dict:
         # Placeholder for metric function registration
-        # Example: self.metric_registry.register("accuracy", accuracy_function)
-        {metric_registry.get()}
-        return 
+        return {}
     
     def _determine_eligibility(self, row):
         # Apply the function to each URL in the column

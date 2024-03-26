@@ -9,7 +9,7 @@ from playwright.sync_api import CDPSession, Page
 from evaluation_harness.helper_functions import (
     PseudoPage,
 )
-from .base import Evaluator, Trajectory
+from lm_act_eval.evaluation_harness.evaluators.webarena_rl.base import Evaluator, Trajectory
 
 @beartype
 class URLExactEvaluator(Evaluator):

@@ -9,8 +9,7 @@ USER_AGENT_HEADERS = {
 
 
 # import all modules from 
-from .metrics import metric_registry
-from .common import evaluator_registry
+from .common import evaluator_registry, metric_registry
 
 
 __all__ = ["evaluator_registry", "metric_registry"]

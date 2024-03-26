@@ -14,6 +14,5 @@ class Pipeline(ABC):
     def generate_completion(self, text: str, image_path: str):
         pass
 
-    @abstractmethod
-    def handle_output(self):
-        pass
+    def handle_output(self, result):
+        return result

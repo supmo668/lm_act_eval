@@ -98,14 +98,18 @@ class ParseChatCompletion:
         matches = re.findall(pattern, input_str, re.DOTALL)
         return matches
     
-    def parse_as_json(self, s: str, target_field='content') -> json:
+    def parse_as_json(self, s: str, target_field=None) -> json:
         """
         Parse the input string to extract a JSON object. If successful, return the 'content' value from the JSON, or return "Content not provided" if not found. If the parsing fails, attempt to extract the content value using the extract_content_value method. If that also fails, return "NA".
+        common target_field:
         """
         try:
             d = ast.literal_eval(s)
             json_str = json.dumps(d, indent=4)
-            return json.loads(json_str)[0][target_field]
+            if target_field:
+                return json.loads(json_str)[0][target_field]
+            else:
+                return json.loads(json_str)
         except:
             try:
                 return self._extract_content_value(s)

@@ -1,0 +1,26 @@
+data:
+  path: .cache/five-star-trajectories/csv/data+gptv.csv
+
+  columns:
+    y: ground_truth
+    y_prime: GPTV response
+    extract_fs:
+    - action: extract_action
+    - thought: extract_thought
+    - explanation: extract_explanation
+
+comparator:
+  gptv:
+    model: gpt-4-vision-preview
+    max_token: 300
+    img_fidelity: high
+    
+metrics:
+  edit_distance:
+    on: actions
+    
+  bleu:
+    on: explanation
+    
+  llm_relevancy:
+    on: explanation

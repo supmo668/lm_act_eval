@@ -1,6 +1,6 @@
 import base64
 import requests
-import re
+import logging
 import os
 import io
 from urllib.parse import urlparse
@@ -16,8 +16,12 @@ from pathlib import Path
 
 from .config import gptv_config
 
+DEFAULT_GPTV_CONFIG = gptv_config()
+
+logger = logging.getLogger(__name__)
+
 class GPTV(Pipeline):
-    def __init__(self, config: dict | gptv_config):
+    def __init__(self, config: dict | gptv_config = DEFAULT_GPTV_CONFIG):
         if isinstance(config, dict):
             config = gptv_config(**config)
         try:
@@ -32,8 +36,9 @@ class GPTV(Pipeline):
             "Content-Type": "application/json",
             "Authorization": f"Bearer {self.api_key}",
         }
-        print(self.config)
-        self.api_url = ENDPOINTS.get("Chat_Completions_API", "https://api.openai.com/v1/chat/completions")
+        logger.info(self.config)
+        self.api_url = ENDPOINTS.get(
+            "Chat_Completions_API", "https://api.openai.com/v1/chat/completions")
 
     @staticmethod
     def is_base64(s):
@@ -89,17 +94,27 @@ class GPTV(Pipeline):
         """
         generate caption via OpenAI's SDK or API
         """
-        image_content = self.process_image(
-            text, images)
+        image_content = self.process_image(text, images)
         composed_message = [{
             "role": "user", 
-            "content": image_content}]
+            "content": image_content
+        }]
         if openai_sdk:
-            response = self.openai_client.chat.completions.create(
-                model=self.config.model,
-                messages=composed_message,
-                max_tokens=self.config.max_tokens
-            )
+            try:
+                # Assuming this is where the API call that might raise the error is made
+                response = self.openai_client.chat.completions.create(
+                    model=self.config.model,
+                    messages=composed_message,
+                    max_tokens=self.config.max_tokens
+                )
+            except requests.exceptions.HTTPError as e:
+                # Extracting JSON response from the error, assuming it's in the same format as the BadRequestError example
+                error_response = e.response.json()
+                error_message = error_response.get('error', {}).get(
+                    'message', f'An exception occurred: {e}')
+                logger.debug(f"Error: {error_message}")
+                return f"error: {error_message}"
+            
         else:
             payload = {
                 "model": self.config.model,
@@ -112,10 +127,15 @@ class GPTV(Pipeline):
                 response.raise_for_status()
                 return response.json()
             except requests.exceptions.HTTPError as e:
-                print(f"Request failed: {e}")
+                logger.debug(f"Request failed: {e}")
         # may further extract meessage with: 
         # response.choices[0].message.content
         return response.choices
+    
+    def handle_output(self, output):
+        # Placeholder: Implement the method according to your needs.
+        # This method needs to be implemented to avoid the abstract class instantiation error.
+        return output
                 
 if __name__ == "__main__":
     """
@@ -134,7 +154,7 @@ if __name__ == "__main__":
             prompt, image_src)
         return caption
     pipeline = GPTV(gptv_config)
-    print(run_example(
+    logger.info(run_example(
         pipeline, prompt, image_src))
     
     # [Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='This image depicts a serene natural landscape featuring a wooden boardwalk that extends through a lush meadow with green grasses. The vibrant greenery suggests this area may be a wetland or marsh, where such walkways are common to allow for exploration without disturbing the delicate ecosystem. The sky is blue with a scattering of white clouds, indicating it could be a fair-weather day and a wonderful opportunity for a nature walk. The photo gives a sense of tranquility and an invitation to the viewer to take a peaceful stroll amidst nature.', role='assistant', function_call=None, tool_calls=None))]

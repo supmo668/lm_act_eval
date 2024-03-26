@@ -49,3 +49,4 @@ from . import USER_AGENT_HEADERS
 from .registry import evaluator_registry, metric_registry
 
 from .sft.trajectory import CSVTrajectoryEvaluator
+from .metrics.external import *

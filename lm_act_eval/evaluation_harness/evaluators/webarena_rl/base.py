@@ -9,14 +9,9 @@ from .browser_env.actions import Action
 from .browser_env.utils import StateInfo
 from lm_act_eval.evaluation_harness.helper_functions import PseudoPage
 
-from typing import Union
+from typing import Union, List
 
-from ..metrics.string import StringEvaluator
-from ..metrics.numeric import NumericEvaluator
-from ..metrics.image import PageImageEvaluator
-from ..metrics.url import URLExactEvaluator, HTMLContentExactEvaluator
-
-Trajectory = list[Union[Action, StateInfo]]
+Trajectory = List[Union[Action, StateInfo]]
 
 
 @beartype
@@ -92,27 +87,3 @@ class EvaluatorComb:
         return score
 
 
-@beartype
-def evaluator_router(
-    config_file: Path | str, captioning_fn=None
-) -> EvaluatorComb:
-    """Router to get the evaluator class"""
-    with open(config_file, "r") as f:
-        configs = json.load(f)
-
-    eval_types = configs["eval"]["eval_types"]
-    evaluators: list[Evaluator | EvaluatorPartial] = []
-    for eval_type in eval_types:
-        match eval_type:
-            case "string_match":
-                evaluators.append(StringEvaluator())
-            case "url_match":
-                evaluators.append(URLExactEvaluator())
-            case "program_html":
-                evaluators.append(HTMLContentExactEvaluator())
-            case "page_image_query":
-                evaluators.append(PageImageEvaluator(captioning_fn))
-            case _:
-                raise ValueError(f"eval_type {eval_type} is not supported")
-
-    return EvaluatorComb(evaluators)

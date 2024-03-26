@@ -1,0 +1,4 @@
+# opentable/conf.yaml
+defaults:
+  - _self_
+  - trajectory: default

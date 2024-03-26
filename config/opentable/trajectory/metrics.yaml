@@ -1,8 +1,0 @@
-edit_distance:
-  on: actions
-  
-bleu:
-  on: explanation
-  
-llm_relevancy:
-  on: explanation

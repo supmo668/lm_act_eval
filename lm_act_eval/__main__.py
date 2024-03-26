@@ -8,10 +8,10 @@ from .log_configs import logger
 @hydra.main(
   version_base=None, 
   config_path="../config",
-  config_name="opentable_trajectory")
+  config_name="trajectory_eval")
 def main(cfg: DictConfig) -> None:
   conf = OmegaConf.to_yaml(cfg)
-  print("Configuration:\n", conf)
+  print("Configuration:\n", conf, type(cfg), type(conf), cfg.keys())
   print(f"Available Evaluators:{evaluator_registry.list_registered()}")
   print(f"Available Metrics:{metric_registry.list_registered()}")
   # Your main function logic here

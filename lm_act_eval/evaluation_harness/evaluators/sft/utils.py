@@ -78,7 +78,8 @@ def generate_text_and_merge(
     if len(df) != len(df):
         warnings.warn(f"{len(df) - len(df)} rows dropped due to NaN in {input_text_column}.")
     text_dataset = Dataset.from_pandas(df[[input_text_column]])
-    text_dataloader = DataLoader(text_dataset, batch_size=batch_size, collate_fn=custom_collate)
+    text_dataloader = DataLoader(
+        text_dataset, batch_size=batch_size, collate_fn=custom_collate)
     
     generated_texts = []
 
@@ -86,18 +87,21 @@ def generate_text_and_merge(
     with torch.no_grad():
         for batch in tqdm(text_dataloader, desc=f"Generate from {input_text_column}"):
             input_texts = batch[input_text_column]
-            input_ids = tokenizer(
+            encoding = tokenizer(
                 input_texts,
                 padding=True,
                 truncation=True,
                 return_tensors="pt",
-            ).input_ids.to(device)
-
+                max_length=model.config.max_position_embeddings,  # Ensure inputs do not exceed model's max length
+            )
+            generation_kwargs.setdefault('pad_token_id', tokenizer.eos_token_id)
             # Generate text outputs
             output_ids = model.generate(
-                input_ids, max_new_tokens=max_new_tokens, **generation_kwargs
+                encoding.input_ids.to(device), 
+                max_new_tokens=max_new_tokens, 
+                attention_mask=encoding.attention_mask.to(device),
+                **generation_kwargs
             )
-
             for ids in output_ids:
                 response_text = tokenizer.decode(
                     ids, skip_special_tokens=True)

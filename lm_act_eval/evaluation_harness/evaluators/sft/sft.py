@@ -12,7 +12,7 @@ import wandb
 from .utils import generate_completions
 from ..metrics import Action as ActionEvaluator
 
-from . import evaluator_registry
+from lm_act_eval.evaluation_harness.evaluators.registry import evaluator_registry
 
 @evaluator_registry.register("finetuning")
 class FinetuneEvaluator:

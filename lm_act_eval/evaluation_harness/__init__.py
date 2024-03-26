@@ -18,4 +18,5 @@ from .helper_functions import (
     shopping_get_sku_latest_review_text,
 )
 
-from .evaluators.metrics import metric_registry
+
+from .evaluators import *

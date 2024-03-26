@@ -20,18 +20,19 @@ Set-up tokens according to `.example.env`
 ## Defining evaluation with Hydra
 
 A config file structure tree looks like the following:
-``` example file structure
-/config
-/<Name of project>
-  /<type>
-    # stores configuration to endpoints or model to produce validation
-    comparator.yaml
-    # dataset path or meta information
-    dataset.yaml
-    # metrics to run the pipeline on
-    metrics.yaml
-  <your_entry_configuration.yaml>
-```
+  ``` example file structure
+  <ENTRY_CONFIG.YAML>
+  <Name of project>
+    <eval_configuration.yaml>
+    <type>
+      # stores configuration to endpoints or model to produce validation
+      comparator.yaml
+      # dataset path or meta information
+      dataset.yaml
+      # metrics to run the pipeline on
+      metrics.yaml
+    
+  ```
 A corresponding hydra `<your_entry_configuration.yaml>` file will be:
 ```
 defaults:

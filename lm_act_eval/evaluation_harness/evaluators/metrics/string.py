@@ -12,15 +12,12 @@ from lm_act_eval.evaluation_harness.helper_functions import (
     llm_fuzzy_match,
     llm_ua_match,
 )
-from evaluation_harness.evaluators import (
-  evaluator_router
-)
 
 from .numeric import NumericEvaluator
 
 
 from . import USER_AGENT_HEADERS
-from ..webarena_rl.base import Evaluator, Trajectory
+from lm_act_eval.evaluation_harness.evaluators.webarena_rl.base import Evaluator, Trajectory
 
 @beartype
 class StringEvaluator(Evaluator):

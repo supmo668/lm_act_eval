@@ -15,7 +15,8 @@ load_dotenv()
 from datasets import Dataset
 import pandas as pd
 dataset_name = "five-star-trajectories"
-dataset_path = Path(f"lm_act_eval/.cache/{dataset_name }")
+dataset_path = Path(f"lm_act_eval/.cache/{dataset_name}")
+assert dataset_path.exists()
 traj_df = pd.read_csv(dataset_path/"csv/data.csv")
 traj_dataset = Dataset.from_pandas(traj_df)
 print(traj_df.columns)
@@ -50,7 +51,7 @@ traj_df = pd.read_csv(dataset_path/'csv/data+gptv.csv')
 from lm_act_eval.evaluation_harness.constants import BNB_QUANTIZATION_CONFIG_8BIT, BitsAndBytesConfig
 
 from lm_act_eval.common.hf import load_model_and_tokenizer
-from lm_act_eval.evaluation_harness.evaluators.sft.utils import generate_text_and_merge
+from lm_act_eval.evaluation_harness.evaluators.sft.utils import generate_text_and_merge, text_from_prompt_and_action
 
 # %%
 from concurrent.futures import ProcessPoolExecutor
@@ -86,26 +87,11 @@ traj_df_generated = generate_text_and_merge(
 
 # %%
 traj_df_new_gen = traj_df.copy()
-traj_df_new_gen.to_csv(dataset_path/f'csv/data+gen_{model_name}.csv', index=False)
-
-# %%
-# def generate_respsonse(
-#     row, pipeline, inp_column="completion_msg_content", log=False, max_new_tokens=256):
-#     response = pipeline(
-#         row[inp_column], max_new_tokens=max_new_tokens, num_return_sequences=1)
-#     generated_text = response[0]["generated_text"]
-#     if log:
-#         wandb.log({
-#             "original_text": row[inp_column],
-#             "generated_text": generated_text})
-#     return generated_text
-
-# # responses = []
-# # for index, row in tqdm(traj_df.iterrows(), desc="generating completions"):
-# #     responses.append(generate_respsonse(
-# #         row, inp_column="completion_msg_content", log=False
-# #     ))
-# # traj_df['generated_responses'] = responses
+model_save_name = model_name.split('/')[1]
+try:
+  traj_df_new_gen.to_csv(dataset_path/f'csv/data+gen_{model_save_name}.csv', index=False)
+except:
+  traj_df_new_gen.to_csv(dataset_path/f'csv/data+eval_gen.csv', index=False)
 
 
 # %% [markdown]
@@ -128,6 +114,7 @@ eval_generation = wandb.Table(dataframe=traj_df)
 #
 # opentable_artifact.add(opentable_table, "opentable")
 opentable_artifact.add(eval_generation, "eval-generations")
+run.log({"opentable_gptv_generation": eval_generation})
 
 
 # %%
@@ -135,63 +122,3 @@ opentable_artifact.add(eval_generation, "eval-generations")
 run.log({"eval-generations": eval_generation})
 # and Log as an Artifact to increase the available row limit!
 run.log_artifact(opentable_artifact)
-
-# %% [markdown]
-# ### Process data
-
-# %% [markdown]
-# ### Eval Metrics
-
-# %%
-from autoevals.llm import *
-from autoevals.string import Levenshtein
-import warnings
-levenshtein_evaluator = Levenshtein()
-
-# %%
-config_metrics = {
-    "Actions": {"edit": "edit"}
-}
-metric_registry = {
-    "edit": Levenshtein()
-}
-def evaluate_trajectory(dataset):
-    """
-    eligible dataset
-    """
-    metric_results = []
-    for index, row in dataset[eligible].iterrows():
-        result_row = {}
-        for metric_config in config_metrics:
-            metric_name = metric_config["name"]
-            if metric_registry.get(metric_name):
-                metric_func = metric_registry[metric_name]
-                result_row[metric_name] = metric_func(row)
-        metric_results.append(result_row)
-
-# %% [markdown]
-# ### Logging
-
-# %%
-# log data
-import wandb
-from dotenv import load_dotenv
-load_dotenv()
-wandb.login(relogin=True)
-
-# %%
-opentable_artifact = wandb.Artifact("opentable_trajectories_gptv.v0", type="dataset")
-# opentable_table = wandb.Table(dataframe=traj_df_new)
-
-opentable_table_eligible = wandb.Table(dataframe=eligible_traj_df)
-#
-# opentable_artifact.add(opentable_table, "opentable")
-opentable_artifact.add(opentable_table_eligible, "opentable-eligibleonly")
-# opentable_artifact.add_file(str(dataset_path/'csv/data+gptv.csv'))
-opentable_artifact.add_file(str(dataset_path/'csv/data+gptv-eligible.csv'))
-
-# Log the table to visualize with a run...
-run.log({"opentable_gptv_generation": opentable_table_eligible})
-
-
-

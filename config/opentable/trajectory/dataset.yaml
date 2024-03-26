@@ -1,9 +1,0 @@
-path: .cache/five-star-trajectories/csv/data+gptv.csv
-
-columns:
-  y: ground_truth
-  y_prime: GPTV response
-  extract_fs:
-  - action: extract_action
-  - thought: extract_thought
-  - explanation: extract_explanation
