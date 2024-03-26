@@ -1,8 +1,11 @@
 defaults:
   - base
-  - metrics@eval_conf: trajectory
-  - comparator@eval_conf: default
-  - dataset@eval_conf: trajectory
+  # Adjust this part to dynamically create the path based on 'dataset' and 'type' fields
+  - dataset@eval_conf: ${dataset}/${type}/dataset
+  - metrics@eval_conf: ${dataset}/${type}/metrics
+  - comparator@eval_conf: ${dataset}/${type}/comparator
+
+
   
 format: csv
 dataset: opentable

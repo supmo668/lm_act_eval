@@ -20,7 +20,7 @@ def main(cfg: DictConfig) -> None:
       # simply dataset 
       logger.info("TODO: add csv support")
       traj_evaluator = evaluator_registry.get('csv_trajectory')(cfg)
-      
+      traj_evaluator.run()
       pass
     case "sft-on":
       # + require model as input
