@@ -2,7 +2,7 @@
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
-from lm_act_eval.evaluation_harness.evaluators import evaluator_registry
+from lm_act_eval.evaluation_harness.evaluators import evaluator_registry, metric_registry
 from .log_configs import logger
 # The decorator automatically reads the configuration from the specified directory
 @hydra.main(
@@ -12,7 +12,8 @@ from .log_configs import logger
 def main(cfg: DictConfig) -> None:
   conf = OmegaConf.to_yaml(cfg)
   print("Configuration:\n", conf)
-  print(f"Modules Available Evaluators:{evaluator_registry.list_registered()}")
+  print(f"Available Evaluators:{evaluator_registry.list_registered()}")
+  print(f"Available Metrics:{metric_registry.list_registered()}")
   # Your main function logic here
   match conf.format:
     case "csv" | "sft-off":

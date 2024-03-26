@@ -4,9 +4,7 @@ import json
 
 from torch import Tensor
 
-
 @dataclass
-class Metric:
-    name: Optional[str] = None
-    function: Function
-    
+class AgentAction:
+  text: str
+  goal_text: str
