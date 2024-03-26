@@ -54,6 +54,9 @@ class BaseEvaluator:
 class CSVEvaluator(BaseEvaluator):
     def __init__(self, config):
         self.config = config
+        self.input_df = pd.read_csv(
+            
+        )
         self._get_metrics()
 
     def _get_metrics(self, metrics):
@@ -65,3 +68,6 @@ class CSVEvaluator(BaseEvaluator):
     def _determine_eligibility(self, row):
         # Apply the function to each URL in the column
         return True
+    
+    def process_inputs(self):
+        return 

@@ -22,40 +22,78 @@ Set-up tokens according to `.example.env`
 A config file structure tree looks like the following:
 ``` example file structure
 /config
-/<Name of dataset/project>
+/<Name of project>
   /<type>
-    /comparator.yaml
-    /metrics.yaml
-  <Your_Config.yaml>
+    # stores configuration to endpoints or model to produce validation
+    comparator.yaml
+    # dataset path or meta information
+    dataset.yaml
+    # metrics to run the pipeline on
+    metrics.yaml
+  <your_entry_configuration.yaml>
 ```
-A corresponding hydra `<Your_Config.yaml>` file will be:
+A corresponding hydra `<your_entry_configuration.yaml>` file will be:
 ```
 defaults:
   - base
+  - dataset@eval_conf: dataset
+  - metrics@eval_conf: trajectory
+  - comparator@eval_conf: default
   
 format: csv/HF
-dataset: <Name of dataset/project (e.g. Opentable)>
+dataset: <Name of project (e.g. Opentable)>
 type: <type (e.g. trajectory)>
 ```
 ##
-* `metrics.yaml`
+* `dataset.yaml`
+Involve dataset path or other metadata, and extracting elements/features for downstream comparison, such as:
+```
+path: <path to dataset>
+columns:
+  y: <name of groundtruth field>
+  y_prime: <name of target, y'>
+  extract_fs:
+  - <extracted field name>: <name of extract function>
+```
+  - example
+    ```
+    path: .cache/five-star-trajectories/csv/data+gptv.csv
+    columns:
+      y: ground_truth
+      y_prime: GPTV response
+      extract_fs:
+      - action: extract_action
+      - thought: extract_thought
+      - explanation: extract_explanation
+      # None: no change
+      - ground_truth_: 
+    ```
 
-```
-<name of metrics>:
-  on: <field of interest (e.g. column in dataset)>
-### such as
-bleu:
-  on: explanation
-```
-##
+* `metrics.yaml`
+  
+  Metrics to use
+  ```
+  <name of metrics>:
+    on: <extracted field of interest (i.e. column or feature in dataset)>
+  ```
+  - example
+    ```
+    bleu:
+      on: explanation
+    ```
+
+
 * ` comparator.yaml`
-You can add some publicly available model that're readily available to compare to your model's performance.
-```
-gptv:
-  model: gpt-4-vision-preview
-  max_token: 300
-  img_fidelity: high
-```
+
+  You can add some publicly available model that're readily available to compare to your model's performance.
+
+  - example 
+    ```
+    gptv:
+      model: gpt-4-vision-preview
+      max_token: 300
+      img_fidelity: high
+    ```
 # Current Support
 ## Evaluation data format
 

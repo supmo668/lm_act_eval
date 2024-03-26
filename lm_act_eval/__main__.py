@@ -18,7 +18,7 @@ def main(cfg: DictConfig) -> None:
     case "csv" | "sft-off":
       # simply dataset 
       logger.info("TODO: add csv support")
-      evaluators.sft.CSVTrajectoryEvaluator
+      traj_evaluator = evaluator_registry.get('csv_trajectory')(cfg)
       
       pass
     case "sft-on":

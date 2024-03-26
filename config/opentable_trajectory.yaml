@@ -1,5 +1,6 @@
 defaults:
   - base
+  - dataset@eval_conf: dataset
   - metrics@eval_conf: trajectory
   - comparator@eval_conf: default
   
