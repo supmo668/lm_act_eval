@@ -1,6 +1,10 @@
+from typing import Any
+import pandas
 from gptv import GPTV
 import pandas as pd
 from typing import *
+from tqdm.auto import tqdm
+tqdm.pandas()
 
 from config import gptv_config
 from .prompts import DEFAULT_EVAL_PROMPT, GPTV_EVAL_PROMPTS
@@ -11,47 +15,57 @@ from lm_act_eval.evaluation_harness.helper_functions.multion import (
   extract_thought,
   extract_action,
   extract_explanation,
-  ParseChatCompletion
+  ParseChatCompletion,
+  extract_first
 )
 
-class WebNavEvaluator:
-    def __init__(self, df: pd.DataFrame):
-        self.initialize_fields()
-    
-    def initialize_fields(self):
-      self.groundtruth = self.df.ground_truth, 
+from lm_act_eval.evaluation_harness.evaluators.registry import evaluator_registry
+from lm_act_eval.evaluation_harness.evaluators.sft.base import CSVEvaluator as PdEvaluator
+
+class GPTVEvaluator(PdEvaluator):
+    def _initialize(self, df):
+      self.df = df
       self.chat_completions = self.df.chat_completion_messages
       self.screenshots= self.df.screenshot
       self.user_inputs = self.df.inputs
-      self.eval_instruct = self.eval_prompt()
+      # 
+      self.gptv = GPTV(gptv_config)
+    
     @property
     def eval_prompt(self):
-        # Custom logic to generate a dynamic prompt based on the given objective
+      # Custom logic to generate a dynamic prompt based on the given objective
         return DEFAULT_EVAL_PROMPT
     
-    def process(self):
-        self.eval_input_df = pd.DataFrame()
-        self.eval_input_df["user_query"] = self.user_inputs.apply(
-          lambda s: ParseChatCompletion().parse_as_json(
-            s, target_field=None).get('QUERY',''))
-        self.eval_input_df["goal"] = self.chat_completions.apply(
-          lambda s: ParseChatCompletion().parse_as_json(s, target_field='content')
-          ).apply(extract_thought)
+    def _process(self):
+      self.process_df = pd.DataFrame(index=self.df.index) 
+      # Using as evaluator
+      self.process_df['QUERY'] = self.user_inputs.apply(lambda s: ParseChatCompletion().parse_as_json(
+        s, target_field=None).get('QUERY',''))
+      self.process_df['GOAL'] = self.chat_completions.apply(lambda s: ParseChatCompletion().parse_as_completion_content(s))
       
-    def synthesize_evaluation_prompts(self, instruct_texts: List):
-      eval_query = pd.Series([
-        DEFAULT_EVAL_PROMPT.format(GOAL=a, QUERY=b) for a, b in zip(*[
-          goal_texts, user_inputs_processed])
-        ])
-    def evaluate_navigation(self, objective, images):
-        prompt = self.generate_evaluation_prompt(objective)
-        return self.generate_completion(prompt, images, openai_sdk=True)
+    def _synthesize_evaluation_prompts(self):
+      """
+      Synthesizes evaluation prompts based on the input dataframe, applying the evaluation prompt format to each row.
+      """
+      return self.process_df.apply(lambda r: self.eval_prompt.format(**r), axis=1)
 
+    def evaluate(self):
+      """
+      Method to perform evaluation. Sets up input dataframe with text and images, and then applies GPT-3 model for generation.
+      """
+      self.input_df = pd.DataFrame(index=self.df.index) 
+      self.input_df['text'] = self._synthesize_evaluation_prompts()
+      self.input_df['images'] = self.screenshots
+      return self.input_df.progress_apply(lambda r: self.gptv.generate_completion(**r), axis=1)
+    
+    def __call__(self, dataset: Union[pd.DataFrame], *args: Any, **kwds: Any) -> Any:
+      self._initialize(dataset)
+      self._process()
+      return self.evaluate()
 
 # Example usage
 if __name__ == "__main__":
-    pipeline = GPTV(gptv_config)
-    evaluator = WebNavEvaluator(pipeline)
+    evaluator = GPTVEvaluator()
     image_sources = [
         "path/to/screenshot1.jpg",
         "path/to/screenshot2.jpg",

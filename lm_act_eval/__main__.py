@@ -3,32 +3,32 @@ import hydra
 from omegaconf import DictConfig, OmegaConf
 
 from lm_act_eval.evaluation_harness.evaluators import evaluator_registry, metric_registry
+from lm_act_eval.evaluation_harness.handlers import (
+  handle_sft
+)
 from .log_configs import logger
-# The decorator automatically reads the configuration from the specified directory
-@hydra.main(
-  version_base=None, 
-  config_path="../config",
-  config_name="trajectory_eval")
+
+@hydra.main(version_base=None, config_path="../config", config_name="trajectory_eval")
 def main(cfg: DictConfig) -> None:
-  conf = OmegaConf.to_yaml(cfg)
-  print("Configuration:\n", conf, type(cfg), type(conf), cfg.keys())
-  print(f"Available Evaluators:{evaluator_registry.list_registered()}")
-  print(f"Available Metrics:{metric_registry.list_registered()}")
-  # Your main function logic here
-  match conf.format:
-    case "csv" | "sft-off":
-      # simply dataset 
-      logger.info("TODO: add csv support")
-      traj_evaluator = evaluator_registry.get('csv_trajectory')(cfg)
-      traj_evaluator.run()
-      pass
-    case "sft-on":
-      # + require model as input
-      raise NotImplementedError("TODO: add sft-on support")
-    case "rl":
-      # + require model as input
-      raise NotImplementedError("TODO: add rl support")
+    logger.info("Configuration loaded successfully.")
+    print(f"Configurations:")
+    print(OmegaConf.to_yaml(cfg))
+    print(f"Available Evaluators: {evaluator_registry.list_registered()}")
+    print(f"Available Metrics: {metric_registry.list_registered()}")
+
+    eval_config = cfg.get('eval', None)
+    if not eval_config:
+        raise ValueError("Evaluation configuration is missing.")
+    
+    # Trajectory evaluation track
+    for eval_type, conf in eval_config.items():
+        match eval_type:
+            case "sft":
+                handle_sft(conf)
+            case _:
+                raise ValueError(
+                  f"Unsupported evaluation type: {eval_type}")
+
 
 if __name__ == "__main__":
     main()
-    

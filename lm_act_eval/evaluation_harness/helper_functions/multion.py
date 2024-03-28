@@ -3,8 +3,9 @@ import re
 import ast
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Dict
 
+from beartype import beartype
 import pandas as pd
 from datasets import Dataset
 
@@ -25,8 +26,12 @@ def action_prefix(action: str) -> Optional[str]:
 def clean_extracted_text(text: str) -> str:
     return text.strip().strip(r"\n")
 
+def extract_first(text:str, term:str="") -> str:
+    return re.findall(rf'{term}:\s*(\d+)', text)[0] if re.search(rf'{term}:\s*(\d+)', text) else None
 
+@beartype
 def extract_thought(text: str) -> str:
+    print(text)
     match = re.search(
         r"(.*?)(COMMANDS:|ANSWER:|ASK_USER_HELP:|EXPLANATION:|STATUS:|$)",
         text,
@@ -96,20 +101,33 @@ class ParseChatCompletion:
     def _extract_content_value(self, input_str: str):
         pattern = r"'content': '(.*?)'}"
         matches = re.findall(pattern, input_str, re.DOTALL)
-        return matches
+        if not matches:
+            return ""
+        return matches[0]
     
-    def parse_as_json(self, s: str, target_field=None) -> json:
+    def parse_as_json(self, s: str, target_field=None) -> str | Dict:
         """
         Parse the input string to extract a JSON object. If successful, return the 'content' value from the JSON, or return "Content not provided" if not found. If the parsing fails, attempt to extract the content value using the extract_content_value method. If that also fails, return "NA".
         common target_field:
         """
         try:
             d = ast.literal_eval(s)
-            json_str = json.dumps(d, indent=4)
+            json_str: str = json.dumps(d, indent=4)
             if target_field:
-                return json.loads(json_str)[0][target_field]
+                return json.loads(json_str).get(target_field)
             else:
                 return json.loads(json_str)
+        except:
+            try:
+                return self._extract_content_value(s)
+            except:
+                return "NA"
+            
+    def parse_as_completion_content(self, s: str) -> str | Dict:
+        try:
+            d = ast.literal_eval(s)
+            json_str: str = json.dumps(d, indent=4)
+            return json.loads(json_str).get('chat_completion_messages',{})[0].get('content',"")
         except:
             try:
                 return self._extract_content_value(s)

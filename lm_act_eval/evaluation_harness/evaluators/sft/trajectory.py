@@ -31,7 +31,7 @@ def extract_trajectory(
   return sorted_grouped_texts
 
 
-@evaluator_registry.register("csv_trajectory")
+@evaluator_registry.register("sft.trajectory")
 class CSVTrajectoryEvaluator(CSVEvaluator):
     def _register_metrics(self):
         # Placeholder for metric function registration
@@ -43,8 +43,7 @@ class CSVTrajectoryEvaluator(CSVEvaluator):
         return True
       
     def process_inputs(self):
-        metric_comp = pd.DataFrame()
-        
+        metric_comp = pd.DataFrame()\
         # Prepare metric input columns
         for c in [gt_col, gen_col]:
           for k, func in process_fs.items():

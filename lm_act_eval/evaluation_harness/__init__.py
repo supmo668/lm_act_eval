@@ -19,4 +19,4 @@ from .helper_functions import (
 )
 
 
-from .evaluators import *
+from .evaluators import metric_registry, evaluator_registry
