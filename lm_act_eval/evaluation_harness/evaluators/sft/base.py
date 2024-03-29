@@ -34,18 +34,16 @@ class BaseEvaluator:
     def __init__(
         self,
         config: Optional[argparse.Namespace],
-        eval_dataset: Optional[Dataset | pd.DataFrame]=None,
         model: Optional[PreTrainedModel]=None,
         **kwargs
         ):
         self.model = model
-        self.eval_dataset = eval_dataset
         self.config = config
         for key, value in kwargs.items():
             setattr(self, key, value)
         
     @abstractmethod
-    def __call__(self, dataset) -> dict | pd.DataFrame:
+    def __call__(self, eval_dataset: Optional[Dataset | pd.DataFrame]=None) -> dict | pd.DataFrame:
         pass
     
     @abstractmethod
@@ -55,9 +53,7 @@ class BaseEvaluator:
 class CSVEvaluator(BaseEvaluator):
     def __init__(self, config):
         self.config = config
-        self.read_df = pd.read_csv(config.data.path)     
-        self.df = self.read_df[self.read_df(lambda row: self._is_entry_elilgible(row), axis=1)]
-
+        self.df = pd.read_csv(config.data.path)
     
     @property
     def metrics(self, metrics: Union[Dict[str, callable], Registry]={}) -> Dict:

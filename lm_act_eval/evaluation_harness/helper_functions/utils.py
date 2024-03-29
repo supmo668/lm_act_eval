@@ -3,6 +3,7 @@ from playwright.sync_api import Page
 
 from .base import PseudoPage
 
+
 @beartype
 def get_query_text(page: Page | PseudoPage, selector: str) -> str:
     """Get the text content of the element matching the given selector.
@@ -31,3 +32,24 @@ def get_query_text_lowercase(page: Page | PseudoPage, selector: str) -> str:
     """Get the lowercase text content of the element matching the given selector."""
     return get_query_text(page, selector).lower()
 
+class FunctionRegistry:
+    registry = {}
+
+    @classmethod
+    def registery(cls, name):
+        def decorator(func):
+            cls.registry[name] = func
+            return func
+        return decorator
+    
+    @classmethod
+    def get(cls, name):
+        """Retrieve a function by name."""
+        return cls.registry.get(name)
+    
+    @classmethod
+    def list(cls):
+        """List all registered functions."""
+        return list(cls.registry.keys())
+
+function_registry = FunctionRegistry()

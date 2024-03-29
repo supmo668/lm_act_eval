@@ -39,3 +39,7 @@ __all__ = [
   "shopping_get_sku_latest_review_rating",
   "shopping_get_sku_latest_review_text"
 ]
+
+from .utils import FunctionRegistry
+
+from .multion import *

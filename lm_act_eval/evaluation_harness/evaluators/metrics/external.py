@@ -14,4 +14,5 @@ contextual_precision = ContextualPrecisionMetric(
 
 metric_registry.register("edit_distance")(levenshtein_comparator)
 
+
 metric_registry.register("contextual_precision")(contextual_precision)

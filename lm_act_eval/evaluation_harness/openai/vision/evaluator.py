@@ -4,6 +4,8 @@ from .gptv import GPTV
 import pandas as pd
 from typing import *
 from tqdm.auto import tqdm
+import re 
+
 tqdm.pandas()
 
 from .config import gptv_config
@@ -20,9 +22,9 @@ from lm_act_eval.evaluation_harness.helper_functions.multion import (
 )
 
 from lm_act_eval.evaluation_harness.evaluators.registry import evaluator_registry
-from lm_act_eval.evaluation_harness.evaluators.sft.base import CSVEvaluator as PdEvaluator
+from lm_act_eval.evaluation_harness.evaluators.metrics.base import DataFrameEvaluator as DFEvaluator
 
-class GPTVEvaluator(PdEvaluator):
+class GPTVEvaluator(DFEvaluator):
     def _process_inputs(self, df):
       self.df = df
       self.chat_completions = self.df.chat_completion_messages
@@ -58,15 +60,21 @@ class GPTVEvaluator(PdEvaluator):
       self.input_df['images'] = self.screenshots
       return self.input_df.progress_apply(lambda r: self.gptv.generate_completion(**r), axis=1)
     
-    def process_result(self, evals):
-      result_df = evals.str.split('\n', n=1, expand=True).rename_axis(index=None)
-      result_df.columns = ['Score', 'Explanation']
+    def _process_result(self, evals):
+      result = evals.str.split('\n', n=1, expand=True).rename_axis(index=None)
+      result.columns = ['Score', 'Explanation']
+      # 
+      result['Score'] = result['Score'].apply(lambda s: extract_first(s, term='SCORE'))
+      extract_explanation = lambda x: re.search(r'EXPLANATION:\n(.+)', x, re.DOTALL).group(1) if re.search(r'EXPLANATION:\n', x) else None
+      result['Explanation'] = result['Explanation'].apply(lambda s: extract_explanation(s))
+      return result
     
     def __call__(self, dataset: Union[pd.DataFrame], *args: Any, **kwds: Any) -> Any:
+      self.input_df = dataset
       self._process_inputs(dataset)
       self._process()
       evals = self.evaluate()
-      return self.process_result(evals)
+      return self._process_result(evals)
 
 # Example usage
 if __name__ == "__main__":

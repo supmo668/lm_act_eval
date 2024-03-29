@@ -3,8 +3,12 @@ trajectory:
     path: lm_act_eval/.cache/five-star-trajectories/csv/data+gptv.csv
     columns:
       y: ground_truth
-      y_': GPTV response
+      y_': GPTV_generations
       extract_fs:
+        QUERY:
+          - user_inputs: parse_query
+        GOAL:
+          - chat_completions: parse_content
       - action: extract_action
       - thought: extract_thought
       - explanation: extract_explanation
