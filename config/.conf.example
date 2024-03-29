@@ -1,8 +1,9 @@
+project: opentable
 eval:
   sft:
     trajectory:
       args:
-        path: .cache/five-star-trajectories/csv/data+gptv.csv
+        path: lm_act_eval/.cache/five-star-trajectories/csv/data+gptv.csv
         columns:
           'y': ground_truth
           y_': GPTV response
@@ -10,11 +11,13 @@ eval:
           - action: extract_action
           - thought: extract_thought
           - explanation: extract_explanation
+          
       comparator:
         gptv:
           model: gpt-4-vision-preview
           max_token: 300
           img_fidelity: high
+          
       metrics:
         edit_distance:
           true: actions

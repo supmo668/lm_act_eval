@@ -11,12 +11,13 @@ def handle_sft(eval_config: DictConfig) -> None:
                   f"Unsupported evaluation track: {eval_track}")
 
 
-def handle_sft_trajectory(detail: DictConfig) -> None:
+def handle_sft_trajectory(eval_detail: DictConfig) -> None:
     """
     Handles the SFT trajectory by creating a trajectory evaluator and evaluating it.
 
     Args:
         detail (DictConfig): The detail configuration for the trajectory.
     """
-    traj_evaluator = evaluator_registry.get('sft.trajectory')(detail)
+    traj_evaluator = evaluator_registry.get('sft.trajectory')(eval_detail)
+    
     traj_evaluator.evaluate()

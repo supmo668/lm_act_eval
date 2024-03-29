@@ -1,4 +1,4 @@
 
-from .trajectory import TrajectoryEvaluator
+# from .external import *
 
-__all__ = ["TrajectoryEvaluator"]
+# __all__ = ["levenshtein_comparator", "contextual_precision"]

@@ -1,27 +1,26 @@
-project: opentable
 eval:
-  trajectory:
-    type: csv
-    detail:
-      path: .cache/five-star-trajectories/csv/data+gptv.csv
-      columns:
-        x: chat_completion_messages
-        y: ground_truth
-        y_': GPTV response
-        img: screenshots
-        extract_fs:
-        - action: extract_action
-        - thought: extract_thought
-        - explanation: extract_explanation
-    comparator:
-      gptv:
-        model: gpt-4-vision-preview
-        max_token: 300
-        img_fidelity: high
-    metrics:
-      edit_distance:
-        true: actions
-      bleu:
-        true: explanation
-      llm_relevancy:
-        true: explanation
+  sft:
+    trajectory:
+      args:
+        path: lm_act_eval/.cache/five-star-trajectories/csv/data+gptv.csv
+        columns:
+          'y': ground_truth
+          y_': GPTV response
+          extract_fs:
+          - action: extract_action
+          - thought: extract_thought
+          - explanation: extract_explanation
+      comparator:
+        gptv:
+          model: gpt-4-vision-preview
+          max_token: 300
+          img_fidelity: high
+      metrics:
+        edit_distance:
+          true: actions
+        gptv:
+          
+        bleu:
+          true: explanation
+        llm_relevancy:
+          true: explanation

@@ -1,6 +1,6 @@
 trajectory: 
-  args: 
-    path: .cache/five-star-trajectories/csv/data+gptv.csv
+  data: 
+    path: lm_act_eval/.cache/five-star-trajectories/csv/data+gptv.csv
     columns:
       y: ground_truth
       y_': GPTV response
@@ -17,10 +17,10 @@ trajectory:
       
   metrics:
     edit_distance:
-      on: actions
+      - actions
       
     bleu:
-      on: explanation
+      - explanation
       
     llm_relevancy:
-      on: explanation
+      - explanation

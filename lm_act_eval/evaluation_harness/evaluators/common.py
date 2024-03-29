@@ -48,7 +48,10 @@ from . import USER_AGENT_HEADERS
 
 from .registry import evaluator_registry, metric_registry
 
+# import the evauators for automatic registration
 from .sft.trajectory import CSVTrajectoryEvaluator
-from .metrics.external import *
+from .metrics.external import levenshtein_comparator, contextual_precision
+
+from lm_act_eval.evaluation_harness.openai.vision.evaluator import GPTVEvaluator
 
 

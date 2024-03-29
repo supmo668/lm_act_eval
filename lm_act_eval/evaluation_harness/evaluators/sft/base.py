@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 import requests
 import json
@@ -26,7 +26,8 @@ from .utils import generate_completions
 # from ..metrics import Action as ActionEvaluator
 
 from lm_act_eval.evaluation_harness.constants import CACHE_DIR
-
+from lm_act_eval.evaluation_harness.evaluators.registry import Registry
+from lm_act_eval.evaluation_harness.evaluators.common import metric_registry
 
 class BaseEvaluator:
     @abstractmethod
@@ -45,7 +46,7 @@ class BaseEvaluator:
         
     @abstractmethod
     def __call__(self, dataset) -> dict | pd.DataFrame:
-        self.eval_dataset = dataset
+        pass
     
     @abstractmethod
     def evaluate(self) -> dict:
@@ -53,17 +54,24 @@ class BaseEvaluator:
 
 class CSVEvaluator(BaseEvaluator):
     def __init__(self, config):
-        self.config = pd.read_csv(config.path)
-        self.df = pd.read_csv(config.path)
-        self._get_metrics()
+        self.config = config
+        self.read_df = pd.read_csv(config.data.path)     
+        self.df = self.read_df[self.read_df(lambda row: self._is_entry_elilgible(row), axis=1)]
 
-    def _get_metrics(self, metrics: Dict[str, callable]) -> Dict:
+    
+    @property
+    def metrics(self, metrics: Union[Dict[str, callable], Registry]={}) -> Dict:
         # Placeholder for metric function registration
-        return {}
+        return metric_registry.get(list(self.config.metrics.keys()))
     
-    def _determine_eligibility(self, row):
-        # Apply the function to each URL in the column
-        return True
+    def _process_result(self, evals):
+        return evals
+  
+    def _process_inputs(self, df):
+        return df
     
-    def process_inputs(self):
-        return 
+    @abstractmethod
+    def __call__(self, dataset: pd.DataFrame, *args, **kwargs):
+        self._process_inputs()
+        evals = self.evaluate()
+        return self.process_result(evals)

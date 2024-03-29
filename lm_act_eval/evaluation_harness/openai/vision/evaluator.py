@@ -1,12 +1,12 @@
 from typing import Any
 import pandas
-from gptv import GPTV
+from .gptv import GPTV
 import pandas as pd
 from typing import *
 from tqdm.auto import tqdm
 tqdm.pandas()
 
-from config import gptv_config
+from .config import gptv_config
 from .prompts import DEFAULT_EVAL_PROMPT, GPTV_EVAL_PROMPTS
 
 from lm_act_eval.evaluation_harness.helper_functions.multion import (
@@ -23,7 +23,7 @@ from lm_act_eval.evaluation_harness.evaluators.registry import evaluator_registr
 from lm_act_eval.evaluation_harness.evaluators.sft.base import CSVEvaluator as PdEvaluator
 
 class GPTVEvaluator(PdEvaluator):
-    def _initialize(self, df):
+    def _process_inputs(self, df):
       self.df = df
       self.chat_completions = self.df.chat_completion_messages
       self.screenshots= self.df.screenshot
@@ -51,28 +51,45 @@ class GPTVEvaluator(PdEvaluator):
 
     def evaluate(self):
       """
-      Method to perform evaluation. Sets up input dataframe with text and images, and then applies GPT-3 model for generation.
+      Method to perform evaluation. Sets up input dataframe with text and images, and then applies GPTV for generation into a series of text evaluation
       """
       self.input_df = pd.DataFrame(index=self.df.index) 
       self.input_df['text'] = self._synthesize_evaluation_prompts()
       self.input_df['images'] = self.screenshots
       return self.input_df.progress_apply(lambda r: self.gptv.generate_completion(**r), axis=1)
     
+    def process_result(self, evals):
+      result_df = evals.str.split('\n', n=1, expand=True).rename_axis(index=None)
+      result_df.columns = ['Score', 'Explanation']
+    
     def __call__(self, dataset: Union[pd.DataFrame], *args: Any, **kwds: Any) -> Any:
-      self._initialize(dataset)
+      self._process_inputs(dataset)
       self._process()
-      return self.evaluate()
+      evals = self.evaluate()
+      return self.process_result(evals)
 
 # Example usage
 if __name__ == "__main__":
+    df = pd.DataFrame({
+      'chat_completion_messages': [
+          '{"target": "Find the product XYZ description", "QUERY": "Navigate to XYZ product page"}',
+          '{"target": "Check shipping options for XYZ", "QUERY": "Go to shipping information section"}'
+      ],
+      'screenshot': [
+          'path/to/screenshot1.jpg',
+          'path/to/screenshot2.jpg'
+          # paths to screenshots relevant to each chat completion message
+      ],
+      'inputs': [
+          'User navigates to the XYZ product page to find descriptions',
+          'User scrolls through the product page to check shipping options'
+          # descriptions of user actions for each scenario
+      ]
+    })
+
     evaluator = GPTVEvaluator()
-    image_sources = [
-        "path/to/screenshot1.jpg",
-        "path/to/screenshot2.jpg",
-        # Add paths or URLs as needed
-    ]
-    final_objective_prompt = "Assess if the webpage navigation reached the target content: a detailed product description for 'XYZ product'."
-    
-    evaluation_results = evaluator.evaluate_navigation(image_sources, final_objective_prompt)
+
+    # Running the evaluator
+    evaluation_results = evaluator(df)
     for result in evaluation_results:
         print(result)

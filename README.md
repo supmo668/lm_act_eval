@@ -1,4 +1,4 @@
-# LLM Action Evaluation (lm_act_eval)
+# LLM Action Evaluation
 
 `lm_act_eval` is a library designed for evaluating language model actions through a variety of metrics and comparators. It leverages Hydra for flexible configuration management.
 
