@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import pandas as pd
 from typing import Any, Union
 
+from 
 class DataFrameEvaluator(ABC):
     def __init__(self, config: dict, *args, **kwargs):
         self.config = config
@@ -16,6 +17,7 @@ class DataFrameEvaluator(ABC):
         """
         self.process_df = self.input[
             self.input(lambda row: self._is_entry_elilgible(row), axis=1)]
+        
         return self.process_df
         
     def _is_entry_elilgible(self, row):

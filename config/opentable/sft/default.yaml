@@ -4,14 +4,17 @@ trajectory:
     columns:
       y: ground_truth
       y_': GPTV_generations
-      extract_fs:
-        QUERY:
-          - user_inputs: parse_query
-        GOAL:
-          - chat_completions: parse_content
-      - action: extract_action
-      - thought: extract_thought
-      - explanation: extract_explanation
+    extract_fs:
+      QUERY:
+        - user_inputs: parse_completion@parse_query
+      GOAL:
+        - chat_completions: parse_completion@parse_content
+      action: 
+        - action: extract_action
+      thought: 
+        - thought: extract_thought
+      explanation:
+        - explanation: extract_explanation
     logging:
       wandb: 
         project: opentable

@@ -24,6 +24,7 @@ from lm_act_eval.evaluation_harness.helper_functions.multion import (
 from lm_act_eval.evaluation_harness.evaluators.registry import evaluator_registry
 from lm_act_eval.evaluation_harness.evaluators.metrics.base import DataFrameEvaluator as DFEvaluator
 
+@evaluator_registry.register('GPT-V')
 class GPTVEvaluator(DFEvaluator):
     def _process_inputs(self, df):
       self.df = df

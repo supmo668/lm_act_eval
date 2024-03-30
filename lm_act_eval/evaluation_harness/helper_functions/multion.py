@@ -9,6 +9,8 @@ from beartype import beartype
 import pandas as pd
 from datasets import Dataset
 
+from .utils import function_registry
+
 COMMANDS_PREFIX = "COMMANDS:"
 ANSWER_PREFIX = "ANSWER:"
 ASK_USER_HELP_PREFIX = "ASK_USER_HELP:"
@@ -22,13 +24,15 @@ def action_prefix(action: str) -> Optional[str]:
             return prefix
     return None
 
-
+@function_registry.register('clean')
 def clean_extracted_text(text: str) -> str:
     return text.strip().strip(r"\n")
 
+@function_registry.register('extract_first')
 def extract_first(text:str, term:str="") -> str:
     return re.findall(rf'{term}:\s*(\d+)', text)[0] if re.search(rf'{term}:\s*(\d+)', text) else None
 
+@function_registry.register('extract_thought')
 @beartype
 def extract_thought(text: str) -> str:
     print(text)
@@ -41,7 +45,7 @@ def extract_thought(text: str) -> str:
         return ""
     return clean_extracted_text(match.group(1))
 
-
+@function_registry.register('extract_action')
 def extract_action(text: str) -> str:
     """
     Extracts the action from the given text.
@@ -64,7 +68,7 @@ def extract_action(text: str) -> str:
         # e.g. clean_extracted_text(match.group(1) + match.group(2))
     return clean_extracted_text(match.group(2))
 
-
+@function_registry.register('extract_explanation')
 def extract_explanation(text: str) -> str:
     match = re.search(
         r"(EXPLANATION:)(.*?)(STATUS:|COMMANDS:|ANSWER:|ASK_USER_HELP:|$)",
@@ -75,7 +79,7 @@ def extract_explanation(text: str) -> str:
         return ""
     return clean_extracted_text(match.group(1) + match.group(2))
 
-
+@function_registry.register('extract_status')
 def extract_status(text: str) -> str:
     match = re.search(
         r"(STATUS:)(.*?)(COMMANDS:|ANSWER:|ASK_USER_HELP:|EXPLANATION:|$)",
@@ -86,7 +90,7 @@ def extract_status(text: str) -> str:
         return ""
     return clean_extracted_text(match.group(1) + match.group(2))
 
-
+@function_registry.register('extract_commands')
 def extract_commands(action: str) -> list[str]:
     if COMMANDS_PREFIX in action:
         objective_start = action.find(COMMANDS_PREFIX) + len(COMMANDS_PREFIX)
@@ -94,6 +98,7 @@ def extract_commands(action: str) -> list[str]:
         return action[objective_start:objective_end].strip().split("\n")
     return []
 
+@function_registry.register('parse_completion')
 class ParseChatCompletion:
     """
     Fix & parse malformed json from chat_completion & provide fallback
@@ -105,7 +110,7 @@ class ParseChatCompletion:
             return ""
         return matches[0]
     
-    def parse_as_json(self, s: str, target_field=None) -> str | Dict:
+    def parse_json(self, s: str, target_field=None) -> str | Dict:
         """
         Parse the input string to extract a JSON object. If successful, return the 'content' value from the JSON, or return "Content not provided" if not found. If the parsing fails, attempt to extract the content value using the extract_content_value method. If that also fails, return "NA".
         common target_field:
@@ -123,6 +128,10 @@ class ParseChatCompletion:
             except:
                 return "NA"
             
+    def parse_content(self, s: str) -> str | Dict:
+        return self.parse_json
+    
+    
     def parse_as_completion_content(self, s: str) -> str | Dict:
         try:
             d = ast.literal_eval(s)
