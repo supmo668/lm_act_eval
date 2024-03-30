@@ -9,7 +9,7 @@ file_formatter = logging.Formatter(fmt='%(asctime)s - %(name)s - %(levelname)s -
 
 
 # Setup FileHandler for logging to a file
-file_handler = logging.FileHandler('khoj_app.log')
+file_handler = logging.FileHandler('lm_act_eval.log')
 file_handler.setFormatter(file_formatter)
 
 
@@ -24,6 +24,8 @@ log_levels = {
     'error': logging.ERROR,
     'critical': logging.CRITICAL
 }
+
+
 log_level = log_levels.get(log_level_str, logging.DEBUG)  # Default to DEBUG if no match
 
 # Configure the root logger

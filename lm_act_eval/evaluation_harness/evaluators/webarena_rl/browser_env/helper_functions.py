@@ -8,7 +8,7 @@ from typing import Any
 from beartype import beartype
 from PIL import Image
 
-from agent.prompts import *
+from lm_act_eval.evaluation_harness.evaluators.webarena_rl.agent.prompts import *
 from . import (
     Action,
     ActionTypes,

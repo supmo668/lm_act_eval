@@ -119,7 +119,7 @@ class ParseChatCompletion:
             d = ast.literal_eval(s)
             json_str: str = json.dumps(d, indent=4)
             if target_field:
-                return json.loads(json_str).get(target_field)
+                return json.loads(json_str).get(target_field, '<Query not found>')
             else:
                 return json.loads(json_str)
         except:
@@ -128,20 +128,11 @@ class ParseChatCompletion:
             except:
                 return "NA"
             
+    def parse_query(self, s:str) -> str:
+        return self.parse_json('QUERY')
+            
     def parse_content(self, s: str) -> str | Dict:
-        return self.parse_json
-    
-    
-    def parse_as_completion_content(self, s: str) -> str | Dict:
-        try:
-            d = ast.literal_eval(s)
-            json_str: str = json.dumps(d, indent=4)
-            return json.loads(json_str).get('chat_completion_messages',{})[0].get('content',"")
-        except:
-            try:
-                return self._extract_content_value(s)
-            except:
-                return "NA"
+        return self.parse_json('chat_completion_messages',{[{}]})[0].get('content',"")
   
 
 @dataclass

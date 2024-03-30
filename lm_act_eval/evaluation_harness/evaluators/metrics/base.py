@@ -1,24 +1,31 @@
 from abc import ABC, abstractmethod
 import pandas as pd
-from typing import Any, Union
+from typing import Any, Union, Literal, Dict
+import logging
 
-from 
+from lm_act_eval.evaluation_harness.helper_functions.utils import function_registry
+
+from .data import cfg_to_function
+
+logger = logging.getLogger(__name__)
+
 class DataFrameEvaluator(ABC):
     def __init__(self, config: dict, *args, **kwargs):
         self.config = config
-        self.process_df = pd.DataFrame()
-        self.input_df = pd.DataFrame()
-    
-    @abstractmethod
-    def _process_inputs(self):
+        self.input_df = pd.read_csv(config.path, index_col=0)
+        self.df = self._process_inputs(self.input_df)
+
+    def _process_inputs(self, input_df):
         """
         Processes the dataframe in preparation for evaluation.
         Subclasses should implement the logic to transform or prepare the data.
         """
-        self.process_df = self.input[
-            self.input(lambda row: self._is_entry_elilgible(row), axis=1)]
+        df = input_df[input_df.apply(self._is_entry_elilgible, axis=1)]
         
-        return self.process_df
+        for (src_field, tgt_field), extract_function in cfg_to_function(self.config.extract_fs):
+            logger.info(f"Extracting to {tgt_field} from {src_field}")
+            df[tgt_field] = df[src_field].apply(extract_function)
+        return df
         
     def _is_entry_elilgible(self, row):
         # Apply the function to each URL in the column

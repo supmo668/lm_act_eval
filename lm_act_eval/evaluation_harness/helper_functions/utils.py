@@ -36,7 +36,7 @@ class FunctionRegistry:
     registry = {}
 
     @classmethod
-    def registery(cls, name):
+    def register(cls, name):
         def decorator(func):
             cls.registry[name] = func
             return func

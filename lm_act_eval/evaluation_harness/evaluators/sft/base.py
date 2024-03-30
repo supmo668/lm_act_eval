@@ -26,7 +26,7 @@ from .utils import generate_completions
 # from ..metrics import Action as ActionEvaluator
 
 from lm_act_eval.evaluation_harness.constants import CACHE_DIR
-from lm_act_eval.evaluation_harness.utils import validate_logging
+from lm_act_eval.evaluation_harness.evaluators.utils import _validate_and_login
 from lm_act_eval.evaluation_harness.evaluators.registry import Registry
 from lm_act_eval.evaluation_harness.evaluators.common import metric_registry
 
@@ -53,9 +53,18 @@ class BaseEvaluator:
 
 class TableEvaluator(BaseEvaluator):
     def __init__(self, config):
+        """
+        Initializes the class instance with the given configuration.
+
+        Args:
+            config (Config): The configuration object containing the necessary parameters.
+
+        Returns:
+            None
+        """
         self.config = config
         self.df = pd.read_csv(config.data.path)
-        self.loggers: Dict = self._validate_logging()
+        self.loggers: Dict = self.__validate_and_login()
         # Determine eligibility on metrics level
         
     @property
@@ -68,10 +77,17 @@ class TableEvaluator(BaseEvaluator):
         return True
     
     def _process_result(self, evals):
+        """
+        A function to process results from evaluations. 
+        Takes a list of evaluations as input. 
+        Returns a concatenated pandas DataFrame of the results.
+        """
+        results_df = []
         for eval in evals:
             if type(eval)==pd.DataFrame:
-                
-        return evals
+                results_df.append(eval)    
+        
+        return pd.concat(results_df, axis=1)
   
     def _process_inputs(self, df):
         return df

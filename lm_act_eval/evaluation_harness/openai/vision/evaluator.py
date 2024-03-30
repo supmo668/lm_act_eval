@@ -1,4 +1,5 @@
 from typing import Any
+from omegaconf import OmegaConf
 import pandas
 from .gptv import GPTV
 import pandas as pd
@@ -21,18 +22,18 @@ from lm_act_eval.evaluation_harness.helper_functions.multion import (
   extract_first
 )
 
+
 from lm_act_eval.evaluation_harness.evaluators.registry import evaluator_registry
 from lm_act_eval.evaluation_harness.evaluators.metrics.base import DataFrameEvaluator as DFEvaluator
 
 @evaluator_registry.register('GPT-V')
 class GPTVEvaluator(DFEvaluator):
-    def _process_inputs(self, df):
-      self.df = df
-      self.chat_completions = self.df.chat_completion_messages
-      self.screenshots= self.df.screenshot
-      self.user_inputs = self.df.inputs
-      # 
-      self.gptv = GPTV(gptv_config)
+    def __init__(self, config: OmegaConf, *args, **kwargs):
+       """
+           A description of the entire function, its parameters, and its return types.
+       """
+       super().__init__(config, *args, **kwargs)
+       self.gptv = GPTV(gptv_config)
     
     @property
     def eval_prompt(self):
@@ -72,7 +73,6 @@ class GPTVEvaluator(DFEvaluator):
     
     def __call__(self, dataset: Union[pd.DataFrame], *args: Any, **kwds: Any) -> Any:
       self.input_df = dataset
-      self._process_inputs(dataset)
       self._process()
       evals = self.evaluate()
       return self._process_result(evals)
