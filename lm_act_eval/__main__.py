@@ -1,5 +1,6 @@
 # lm_act_eval/lm_act_eval/__main__.py
 import hydra
+from dotenv import load_dotenv
 from omegaconf import DictConfig, OmegaConf
 
 from lm_act_eval.evaluation_harness.evaluators import evaluator_registry, metric_registry
@@ -7,6 +8,8 @@ from lm_act_eval.evaluation_harness.handlers import (
   handle_sft
 )
 from .log_configs import logger
+
+load_dotenv()
 
 @hydra.main(version_base=None, config_path="../config", config_name="trajectory_eval")
 def main(cfg: DictConfig) -> None:

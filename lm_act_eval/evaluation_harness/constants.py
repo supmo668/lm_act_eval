@@ -28,3 +28,11 @@ class BNB_OFFLOADING_CONFIG:
     low_cpu_mem_usage: bool=True
     device_map: str ="auto"
     max_memory: Dict ={0: '80000Mib', "cpu": '16Gib'}
+    
+    
+#### Logging
+LOGGING_PLATFORMS = {
+  'wandb': 'WANDB_API_KEY', 
+  'hf': 'HUGGINGFACE_API_KEY'
+}
+

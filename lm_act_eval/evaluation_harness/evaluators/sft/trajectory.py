@@ -1,5 +1,5 @@
 
-from .base import CSVEvaluator
+from .base import TableEvaluator
 from typing import *
 import pandas as pd
 
@@ -32,20 +32,15 @@ def extract_trajectory(
 
 
 @evaluator_registry.register("sft.trajectory")
-class CSVTrajectoryEvaluator(CSVEvaluator):
-    def _register_metrics(self):
-        # Placeholder for metric function registration
-        # Example: self.metric_registry.register("accuracy", accuracy_function)
-        pass
-
-    def _determine_eligibility(self, row):
-        # Apply the function to each URL in the column
-        return True
+class TableTrajectoryEvaluator(TableEvaluator):
+    def __init__(self, config, *args, **kwargs):
+        """
+        Handles evaluation of all the metrics in the given evaluation track
+        """
+        super().__init__(config)
       
-    def process_inputs(self):
-        metric_comp = pd.DataFrame()\
-        # Prepare metric input columns
-        for c in [gt_col, gen_col]:
-          for k, func in process_fs.items():
-            metric_comp[c+'_'+k] = metric_comp[c].progress_apply(func)
-        return super().process_inputs()
+    def _process_result(self, evals):
+        return evals
+  
+    def _process_inputs(self, df):
+        return df
