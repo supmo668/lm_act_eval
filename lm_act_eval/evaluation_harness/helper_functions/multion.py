@@ -17,6 +17,8 @@ ASK_USER_HELP_PREFIX = "ASK_USER_HELP:"
 EXPLANATION_PREFIX = "EXPLANATION:"
 STATUS_PREFIX = "STATUS:"
 
+import logging, warnings
+logger = logging.getLogger(__name__)
 
 def action_prefix(action: str) -> Optional[str]:
     for prefix in [COMMANDS_PREFIX, ANSWER_PREFIX, ASK_USER_HELP_PREFIX]:
@@ -110,10 +112,18 @@ class ParseChatCompletion:
             return ""
         return matches[0]
     
-    def parse_json(self, s: str, target_field=None) -> str | Dict:
+    def parse_json(
+        self, s: str, target_field=None) -> str | Dict:
         """
-        Parse the input string to extract a JSON object. If successful, return the 'content' value from the JSON, or return "Content not provided" if not found. If the parsing fails, attempt to extract the content value using the extract_content_value method. If that also fails, return "NA".
-        common target_field:
+        Parses a JSON string and returns the corresponding Python object.
+
+        Args:
+            s (str): The JSON string to be parsed.
+            target_field (str, optional): The specific field to extract from the parsed JSON object. Defaults to None.
+        Returns:
+            str | Dict: The parsed JSON object as a Python dictionary if `target_field` is not specified. 
+                         Otherwise, returns the value of the specified `target_field` from the parsed JSON object.
+                         If the parsing or extraction fails, returns "NA".
         """
         try:
             d = ast.literal_eval(s)
@@ -129,10 +139,18 @@ class ParseChatCompletion:
                 return "NA"
             
     def parse_query(self, s:str) -> str:
-        return self.parse_json('QUERY')
+        return self.parse_json(s, 'QUERY')
             
     def parse_content(self, s: str) -> str | Dict:
-        return self.parse_json('chat_completion_messages',{[{}]})[0].get('content',"")
+        try:
+            chat_completion_msgs = self.parse_json(s, 'chat_completion_messages')
+        except Exception as e:
+            return ""
+        if isinstance(chat_completion_msgs, list):
+            return chat_completion_msgs[0].get('content',"")
+        else: 
+            warnings.warn(f"Unexpected format, returning suspicious content of type {type(chat_completion_msgs)}, using as is: {chat_completion_msgs}")
+            return chat_completion_msgs
   
 
 @dataclass

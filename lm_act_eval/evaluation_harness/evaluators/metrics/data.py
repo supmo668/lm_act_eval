@@ -23,5 +23,5 @@ def cfg_to_function(funct_pairs: Dict) -> Tuple[Tuple[str, str], str]:
     function = function_registry.get(func_name)
     if _function_is_cls:
       # retrieve from class
-      function = getattr(function, cls_func)
+      function = getattr(function(), cls_func)
     yield (src_field, tgt_field), function

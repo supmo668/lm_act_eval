@@ -8,7 +8,7 @@ trajectory:
       USER_QUERY:
         QUERY: parse_completion.parse_query
       GOAL:
-        chat_completions: parse_completion.parse_content
+        chat_completion_messages: parse_completion.parse_content
       action: 
         action: extract_action
       thought: 
@@ -16,8 +16,7 @@ trajectory:
       explanation:
         explanation: extract_explanation
     logging:
-      wandb: 
-        project: opentable
+      project: opentable
         # log as table by default
         result: lm_act_eval-run
       hugging:

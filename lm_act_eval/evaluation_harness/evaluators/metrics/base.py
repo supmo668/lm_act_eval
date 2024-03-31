@@ -23,6 +23,7 @@ class DataFrameEvaluator(ABC):
         df = input_df[input_df.apply(self._is_entry_elilgible, axis=1)]
         
         for (src_field, tgt_field), extract_function in cfg_to_function(self.config.extract_fs):
+            print(tgt_field, src_field, extract_function)
             logger.info(f"Extracting to {tgt_field} from {src_field}")
             df[tgt_field] = df[src_field].apply(extract_function)
         return df
