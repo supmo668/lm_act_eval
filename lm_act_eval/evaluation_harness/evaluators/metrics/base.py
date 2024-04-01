@@ -1,53 +1,71 @@
 from abc import ABC, abstractmethod
 import pandas as pd
+from datasets import Dataset
 from typing import Any, Union, Literal, Dict
-import logging
 
 from lm_act_eval.evaluation_harness.helper_functions.utils import function_registry
+from lm_act_eval.evaluation_harness.utils.url import is_screenshot_url_accessible
 
-from .data import cfg_to_function
+from omegaconf import OmegaConf
 
-logger = logging.getLogger(__name__)
+class BaseScorer:
+    def __init__(self, config: OmegaConf, *args, **kwargs):
+        """
+        Initializes the class with the given config using OmegaConf.
 
-class DataFrameEvaluator(ABC):
-    def __init__(self, config: dict, *args, **kwargs):
+        Parameters:
+            config (OmegaConf): The configuration object.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+        """
         self.config = config
-        self.input_df = pd.read_csv(config.path, index_col=0)
-        self.df = self._process_inputs(self.input_df)
+    
+    @property
+    def eval_prompt(self):
+      # Custom logic to generate a dynamic prompt based on the given objective
+        return ""
 
-    def _process_inputs(self, input_df):
-        """
-        Processes the dataframe in preparation for evaluation.
-        Subclasses should implement the logic to transform or prepare the data.
-        """
-        df = input_df[input_df.apply(self._is_entry_elilgible, axis=1)]
-        
-        for (src_field, tgt_field), extract_function in cfg_to_function(self.config.extract_fs):
-            print(tgt_field, src_field, extract_function)
-            logger.info(f"Extracting to {tgt_field} from {src_field}")
-            df[tgt_field] = df[src_field].apply(extract_function)
-        return df
-        
-    def _is_entry_elilgible(self, row):
-        # Apply the function to each URL in the column
-        return True
-    
-    def _process(self):
-        return self.process_df
-    
     @abstractmethod
     def evaluate(self) -> Any:
-        """
-        Performs the evaluation.
-        Subclasses should implement the evaluation logic and return the results.
-        """
-        pass
+      """
+      Method to perform evaluation. Sets up input dataframe with text and images, and then applies GPTV for generation into a series of text evaluation
+      """
+      pass
     
-    def process_result(self, evals):
-        return evals
+    @abstractmethod
+    def __call__(self, dataset: Union[Dataset, pd.DataFrame], *args: Any, **kwds: Any) -> Any:
+      self.input_df = dataset
+      return self.evaluate()
+    
+class DFTableScorer(BaseScorer):
+    def __init__(self, config: OmegaConf, *args, **kwargs):
+        self.config = config
+        self.process_df = pd.DataFrame()
+    
+    @property
+    def eval_prompt(self):
+      # Custom logic to generate a dynamic prompt based on the given objective
+        return ""
 
-    def __call__(self, input: Union[pd.DataFrame], *args: Any, **kwds: Any) -> Any:
-        self._process_inputs(input)
-        self._process()
-        evals = self.evaluate()
-        return self.process_result(evals)
+    @abstractmethod
+    def evaluate(self) -> Any:
+      assert hasattr(self, 'result')
+      
+    def is_eligible(self, row):  
+      # Apply the function to each URL in the column
+      return True
+      
+    def _process(self):
+      assert hasattr(self, 'input_df')
+      self.process_df = self.input_df[self.input_df.apply(self.is_eligible, axis=1)]
+      return 
+    
+    def _process_result(self, evals, *args, **kwargs):
+        return evals
+    
+    @abstractmethod
+    def __call__(self, dataset: Union[pd.DataFrame], *args: Any, **kwds: Any) -> Any:
+      self.input_df = dataset
+      self._process()
+      self.evaluate()
+      return self._process_result()

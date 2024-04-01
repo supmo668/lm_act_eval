@@ -28,7 +28,7 @@ from abc import ABC, abstractmethod
 import wandb
 
 @beartype
-class Evaluator(ABC):
+class metric(ABC):
     def __init__(self, config):
         self.config = config
         self.results = None
@@ -44,17 +44,7 @@ class Evaluator(ABC):
         """The core logic for processing or evaluating."""
         pass
         
-    @beartype
-    def log_artifacts(self):
-        """Create and log a wandb db artifact or table object."""
-        # Placeholder for logging logic
-        # Here you would create a wandb.Table or other artifact based on self.results
-        # For example, if results is a dictionary:
-        if self.results is not None:
-            table = wandb.Table(data=[list(self.results.values())], columns=list(self.results.keys()))
-            self.artifact = wandb.log({"evaluation_results": table})
-        else:
-            print("No results to log.")
+
     
     def __call__(self):
         """Run the evaluator workflow: initialize, process, and log results."""

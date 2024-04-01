@@ -1,13 +1,14 @@
 from typing import Any
 from omegaconf import OmegaConf
+from openai import completions
 import pandas
+
+from lm_act_eval.evaluation_harness.utils.url import is_screenshot_url_accessible
 from .gptv import GPTV
 import pandas as pd
 from typing import *
 from tqdm.auto import tqdm
 import re 
-
-tqdm.pandas()
 
 from .config import gptv_config
 from .prompts import DEFAULT_EVAL_PROMPT, GPTV_EVAL_PROMPTS
@@ -23,53 +24,67 @@ from lm_act_eval.evaluation_harness.helper_functions.multion import (
 )
 
 
-from lm_act_eval.evaluation_harness.evaluators.registry import evaluator_registry
-from lm_act_eval.evaluation_harness.evaluators.metrics.base import DataFrameEvaluator as DFEvaluator
+from lm_act_eval.evaluation_harness.evaluators.registry import metric_registry
+from lm_act_eval.evaluation_harness.evaluators.metrics.base import DFTableScorer
 
-@evaluator_registry.register('GPT-V')
-class GPTVEvaluator(DFEvaluator):
+@metric_registry.register('gpt-v')
+class GPTVScorer(DFTableScorer):
     def __init__(self, config: OmegaConf, *args, **kwargs):
-       """
-           A description of the entire function, its parameters, and its return types.
-       """
-       super().__init__(config, *args, **kwargs)
-       self.gptv = GPTV(gptv_config)
+        """
+            A description of the entire function, its parameters, and its return types.
+        """
+        super().__init__(config, *args, **kwargs)
+        if not args:
+          self.gptv = GPTV(gptv_config)
+        else: 
+          self.gptv = GPTV(**config)
+        self.required_cols = ['QUERY', 'GOAL', 'screenshot']
+    
+    def _process(self):
+      assert all([c in self.input_df.columns for c in self.required_cols]), f"Missing all required columns: {self.required_cols}"
+      tqdm.pandas(desc='Determining entry eligibility')
+      self.process_df = self.input_df[self.input_df.progress_apply(self.is_eligible, axis=1)]
+    
+    def is_eligible(self, row):
+      return is_screenshot_url_accessible(row)
     
     @property
     def eval_prompt(self):
       # Custom logic to generate a dynamic prompt based on the given objective
-        return DEFAULT_EVAL_PROMPT
+      # field involved:
+        # QUERY
+        # GOAL
+      return DEFAULT_EVAL_PROMPT
     
-    def _process(self):
-      self.process_df = pd.DataFrame(index=self.df.index) 
-      # Using as evaluator
-      self.process_df['QUERY'] = self.user_inputs.apply(lambda s: ParseChatCompletion().parse_as_json(
-        s, target_field=None).get('QUERY',''))
-      self.process_df['GOAL'] = self.chat_completions.apply(lambda s: ParseChatCompletion().parse_as_completion_content(s))
+    def _synthesize_and_evaluate(self, row):
+      """
+      Combines prompt synthesis, model generation, and result processing for a single row.
+      """
+      # Synthesize evaluation prompt
+      prompt = self.eval_prompt.format(**row)
       
-    def _synthesize_evaluation_prompts(self):
-      """
-      Synthesizes evaluation prompts based on the input dataframe, applying the evaluation prompt format to each row.
-      """
-      return self.process_df.apply(lambda r: self.eval_prompt.format(**r), axis=1)
-
-    def evaluate(self):
-      """
-      Method to perform evaluation. Sets up input dataframe with text and images, and then applies GPTV for generation into a series of text evaluation
-      """
-      self.input_df = pd.DataFrame(index=self.df.index) 
-      self.input_df['text'] = self._synthesize_evaluation_prompts()
-      self.input_df['images'] = self.screenshots
-      return self.input_df.progress_apply(lambda r: self.gptv.generate_completion(**r), axis=1)
+      # Generate model completion (assuming this function takes named arguments for text and image)
+      completion = self.gptv.generate_completion(
+        text=prompt, images=[row.screenshot])
+      
+      # Process and split the completion into Score and Explanation
+      score, explanation = completion.split('\n', 1)
+      score = extract_first(score, 'SCORE')
+      explanation = extract_first(
+        explanation, 'EXPLANATION')
+      return pd.Series({
+        'Score': score, 
+        'Explanation': explanation
+        })
     
+    def evaluate(self):
+      tqdm.pandas(desc='Evaluating with GPT-V')
+      evals = self.process_df.progress_apply(
+        self._synthesize_and_evaluate, axis=1)
+      return evals
+
     def _process_result(self, evals):
-      result = evals.str.split('\n', n=1, expand=True).rename_axis(index=None)
-      result.columns = ['Score', 'Explanation']
-      # 
-      result['Score'] = result['Score'].apply(lambda s: extract_first(s, term='SCORE'))
-      extract_explanation = lambda x: re.search(r'EXPLANATION:\n(.+)', x, re.DOTALL).group(1) if re.search(r'EXPLANATION:\n', x) else None
-      result['Explanation'] = result['Explanation'].apply(lambda s: extract_explanation(s))
-      return result
+      return evals
     
     def __call__(self, dataset: Union[pd.DataFrame], *args: Any, **kwds: Any) -> Any:
       self.input_df = dataset
@@ -79,6 +94,7 @@ class GPTVEvaluator(DFEvaluator):
 
 # Example usage
 if __name__ == "__main__":
+  
     df = pd.DataFrame({
       'chat_completion_messages': [
           '{"target": "Find the product XYZ description", "QUERY": "Navigate to XYZ product page"}',
@@ -96,7 +112,7 @@ if __name__ == "__main__":
       ]
     })
 
-    evaluator = GPTVEvaluator()
+    evaluator = GPTVScorer()
 
     # Running the evaluator
     evaluation_results = evaluator(df)

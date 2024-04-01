@@ -31,8 +31,10 @@ def clean_extracted_text(text: str) -> str:
     return text.strip().strip(r"\n")
 
 @function_registry.register('extract_first')
-def extract_first(text:str, term:str="") -> str:
-    return re.findall(rf'{term}:\s*(\d+)', text)[0] if re.search(rf'{term}:\s*(\d+)', text) else None
+def extract_first(text: str, term: str = "") -> str:
+    pattern = rf'{term}:\s*([\s\S]+?)(?=\n[A-Z]+:|$)'
+    matches = re.findall(pattern, text)
+    return matches[0].strip() if matches else None
 
 @function_registry.register('extract_thought')
 @beartype
@@ -133,23 +135,25 @@ class ParseChatCompletion:
             else:
                 return json.loads(json_str)
         except:
+            warnings.warn(f"Failed to parse json, returning content field")
             try:
                 return self._extract_content_value(s)
             except:
                 return "NA"
             
-    def parse_query(self, s:str) -> str:
-        return self.parse_json(s, 'QUERY')
+    def extract_query(self, s:str) -> str:
+        return extract_commands(self.parse_content(s))
             
     def parse_content(self, s: str) -> str | Dict:
         try:
             chat_completion_msgs = self.parse_json(s, 'chat_completion_messages')
         except Exception as e:
             return ""
+        # Expected to be a list, get content of first msgs
         if isinstance(chat_completion_msgs, list):
             return chat_completion_msgs[0].get('content',"")
         else: 
-            warnings.warn(f"Unexpected format, returning suspicious content of type {type(chat_completion_msgs)}, using as is: {chat_completion_msgs}")
+            warnings.warn(f"Unexpected format, returning suspicious content of type {type(chat_completion_msgs)}, using as is")
             return chat_completion_msgs
   
 

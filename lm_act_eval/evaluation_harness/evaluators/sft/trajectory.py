@@ -1,5 +1,5 @@
 
-from .base import TableEvaluator
+from .base import DataFrameEvaluator
 from typing import *
 import pandas as pd
 
@@ -32,15 +32,22 @@ def extract_trajectory(
 
 
 @evaluator_registry.register("sft.trajectory")
-class TableTrajectoryEvaluator(TableEvaluator):
+class TableTrajectoryEvaluator(DataFrameEvaluator):
     def __init__(self, config, *args, **kwargs):
         """
         Handles evaluation of all the metrics in the given evaluation track
         """
         super().__init__(config)
-      
+        
+    def _is_entry_elilgible(self, row):
+        # Apply the function to each URL in the column
+        return True
+    
     def _process_result(self, evals):
         return evals
-  
-    def _process_inputs(self, df):
-        return df
+    
+    def _process(self):
+        return self.process_df
+    
+    def process_result(self, evals):
+        return evals

@@ -3,6 +3,7 @@ from playwright.sync_api import Page
 
 from .base import PseudoPage
 
+import warnings
 
 @beartype
 def get_query_text(page: Page | PseudoPage, selector: str) -> str:
@@ -45,7 +46,13 @@ class FunctionRegistry:
     @classmethod
     def get(cls, name):
         """Retrieve a function by name."""
-        return cls.registry.get(name)
+        if name in cls.registry:
+            return cls.registry.get(name)
+        else:
+            # return do nothing function 
+            warnings.warn(f"{name} doesn't exist in the registry.")
+            do_nothing = lambda x: x
+            return do_nothing
     
     @classmethod
     def list(cls):

@@ -52,6 +52,6 @@ from .registry import evaluator_registry, metric_registry
 from .sft.trajectory import TableTrajectoryEvaluator
 from .metrics.external import levenshtein_comparator, contextual_precision
 
-from lm_act_eval.evaluation_harness.openai.vision.evaluator import GPTVEvaluator
+from lm_act_eval.evaluation_harness.openai.vision.evaluator import GPTVScorer
 
 

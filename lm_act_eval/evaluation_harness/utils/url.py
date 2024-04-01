@@ -3,7 +3,7 @@ from typing import LiteralString
 from pandas import Series, DataFrame
 
 def is_screenshot_url_accessible(url: Series| LiteralString, field_name="screenshot"):
-    if type(url) == Series | DataFrame:
+    if isinstance(url, (Series, DataFrame)):
         assert field_name, "Field name must be specified for which field is the url field"
         url = url.get(field_name)
     try:

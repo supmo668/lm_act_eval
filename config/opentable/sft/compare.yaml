@@ -5,12 +5,16 @@ trajectory:
       y: ground_truth
       y_': GPTV_generations
     extract_fs:
-      QUERY:
-        QUERY:
-      screenshot:
-        screenshot:
+      USER_QUERY:
+        QUERY: parse_completion.parse_query
       GOAL:
         chat_completion_messages: parse_completion.parse_content
+      action:
+        action: extract_action
+      thought:
+        thought: extract_thought
+      explanation:
+        explanation: extract_explanation
     logging:
       # log as table by default
       project: opentable
@@ -19,24 +23,21 @@ trajectory:
         space: multion-agi
 
   comparator:
-    gpt-v:
+    gptv:
       model: gpt-4-vision-preview
       max_token: 300
       img_fidelity: high
   
   metrics:
-    gpt-v:
-      inputs:
-        - GOAL
-        - QUERY
-        - screenshots
-      args:
-    # edit_distance:
-    #   - actions
-    # last_state:
-    #   - URL
-    # bleu:
-    #   - explanation
+    gptv:
+      - GOAL
+      - QUERY
+    edit_distance:
+      - actions
+    last_state:
+      - URL
+    bleu:
+      - explanation
       
     llm_relevancy:
       - explanation

@@ -6,6 +6,7 @@ import io
 from urllib.parse import urlparse
 import mimetypes
 from beartype import beartype
+from typing import *
 
 from openai import OpenAI
 from PIL import Image
@@ -61,7 +62,7 @@ class GPTV(Pipeline):
             return False
     
     @beartype
-    def process_input(self, image_path: str | Path, text:str):
+    def process_input(self, image_path: str | Path| List[Union[str, Path]], text:str):
         img_contents = self.process_image(image_path)
         text= self.process_chat(text)
         img_contents.extend(text)
@@ -80,7 +81,7 @@ class GPTV(Pipeline):
         else:
             raise ValueError(f"Unsupported image input type: {type(image_input)} or check {image_input} exist")
 
-    def process_image(self, image_input):
+    def process_image(self, image_inputs: str | List[str]):
         """
         Process an image input and return a list of image contents.
 
@@ -107,11 +108,10 @@ class GPTV(Pipeline):
             [{"type": "image_url", "image_url": {"url": "https://example.com/image1.jpg"}},
              {"type": "image_url", "image_url": {"url": "data:image/jpeg;base64,encoded_image_data"}}]
         """
-        if not isinstance(image_input, list):
-            images = [image_input]
-            
+        if not isinstance(image_inputs, list):
+            image_inputs = [image_inputs]
         image_contents = []
-        for image in images:
+        for image in image_inputs:
             if self.is_url(image):
                 image_content = {
                     "type": "image_url", 
@@ -126,7 +126,7 @@ class GPTV(Pipeline):
             image_contents.append(image_content)
         return image_contents
     
-    def generate_completion(self, text, images, openai_sdk=True):
+    def generate_completion(self, text: str, images: List[str], openai_sdk=True):
         """
         generate caption via OpenAI's SDK or API
         """
