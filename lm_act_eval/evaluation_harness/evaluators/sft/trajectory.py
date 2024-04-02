@@ -1,12 +1,9 @@
-
-from .base import DataFrameEvaluator
 from typing import *
 import pandas as pd
 
 from lm_act_eval.evaluation_harness.evaluators.registry import evaluator_registry
 
-from .process import process_fs
-
+import warnings
 
 def extract_trajectory(
   traj_df, target_col: str='ground_truth',
@@ -30,6 +27,7 @@ def extract_trajectory(
   )
   return sorted_grouped_texts
 
+from .dataframe import DataFrameEvaluator
 
 @evaluator_registry.register("sft.trajectory")
 class TableTrajectoryEvaluator(DataFrameEvaluator):
@@ -39,10 +37,6 @@ class TableTrajectoryEvaluator(DataFrameEvaluator):
         """
         super().__init__(config)
         
-    def _is_entry_elilgible(self, row):
-        # Apply the function to each URL in the column
-        return True
-    
     def _process_result(self, evals):
         return evals
     

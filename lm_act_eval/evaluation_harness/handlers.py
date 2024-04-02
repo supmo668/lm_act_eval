@@ -20,5 +20,4 @@ def handle_sft_trajectory(eval_detail: DictConfig) -> None:
         detail (DictConfig): The detail configuration for the trajectory.
     """
     traj_evaluator = evaluator_registry.get('sft.trajectory')(eval_detail)
-    
     traj_evaluator.evaluate()

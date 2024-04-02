@@ -1,0 +1,42 @@
+trajectory: 
+  data: 
+    path: lm_act_eval/.cache/five-star-trajectories/csv/data.csv
+    columns:
+      y: ground_truth
+      y_': GPTV_generations
+    extract_fs:
+      QUERY:
+        QUERY:
+      screenshot:
+        screenshot:
+      GOAL:
+        chat_completion_messages: parse_completion.parse_content
+    logging:
+      # log as table by default
+      project: opentable
+      result: lm_act_eval-run
+      hugging:
+        space: multion-agi
+
+  comparator:
+    gpt-v:
+      model: gpt-4-vision-preview
+      max_token: 300
+      img_fidelity: high
+  
+  metrics:
+    gpt-v:
+      inputs:
+        - GOAL
+        - QUERY
+        - screenshots
+      args:
+    # edit_distance:
+    #   - actions
+    # last_state:
+    #   - URL
+    # bleu:
+    #   - explanation
+      
+    llm_relevancy:
+      - explanation

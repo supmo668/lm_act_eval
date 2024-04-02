@@ -49,10 +49,7 @@ class FunctionRegistry:
         if name in cls.registry:
             return cls.registry.get(name)
         else:
-            # return do nothing function 
-            warnings.warn(f"{name} doesn't exist in the registry.")
-            do_nothing = lambda x: x
-            return do_nothing
+            raise Exception(f"{name} doesn't exist in the registry. Choose from: {cls.registry}")
     
     @classmethod
     def list(cls):

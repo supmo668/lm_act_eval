@@ -40,6 +40,7 @@ class GPTVScorer(DFTableScorer):
           self.gptv = GPTV(**config)
         self.required_cols = ['QUERY', 'GOAL', 'screenshot']
     
+    
     def _process(self):
       assert all([c in self.input_df.columns for c in self.required_cols]), f"Missing all required columns: {self.required_cols}"
       tqdm.pandas(desc='Determining entry eligibility')

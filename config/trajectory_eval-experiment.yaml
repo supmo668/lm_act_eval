@@ -1,0 +1,6 @@
+# config.yaml
+defaults:
+  - _self_
+  - opentable/experiment@eval
+
+project: opentable

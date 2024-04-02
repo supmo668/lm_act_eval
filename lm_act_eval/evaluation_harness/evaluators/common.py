@@ -49,6 +49,7 @@ from . import USER_AGENT_HEADERS
 from .registry import evaluator_registry, metric_registry
 
 # import the evauators for automatic registration
+
 from .sft.trajectory import TableTrajectoryEvaluator
 from .metrics.external import levenshtein_comparator, contextual_precision
 

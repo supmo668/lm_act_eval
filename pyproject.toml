@@ -17,12 +17,12 @@ beautifulsoup4 = "4.12.3"
 huggingface-hub = "0.21.4"
 llama-index = "0.10.6"
 multion = "0.3.13"
-numpy = "1.25.2"
+numpy = "^1.25.2"
 openai = "1.13.3"
 opencv-python = "4.8.1.78"
 Pillow = "10.0.1"
 playwright = "1.37.0"
-pandas = "2.2.1"
+pandas = "^2.2.1"
 pydantic = "1.10.14"
 python-dotenv = "1.0.1"
 PyYAML = "6.0.1"
@@ -30,7 +30,11 @@ scikit-image = "0.22.0"
 torch = "2.2.1"
 wandb = "0.16.4"
 
+[tool.poetry.group.dev.dependencies]
+pytest = "^6.0" # Development dependency
 
+[tool.poetry.group.webarena.dependencies]
+pytest = "^6.0" # Development dependency
 # Webarena
 gymnasium = "0.29.1"
 matplotlib= "3.8.3"
@@ -39,13 +43,22 @@ aiolimiter = "1.1.0"
 vertexai = "1.43.0"
 
 # Multion-specific dependencies, sorted alphabetically for readability
+[tool.poetry.group.multion.dependencies]
+pytest = "^6.0" # Development dependency
 autoevals = "0.0.53"
 braintrust_core = "0.0.26"
 deepeval = "0.20.90"
-honeyhive = "0.1.82"
+honeyhive = "^0.1.82"
 langchain = "0.0.304"
 lm_eval = "0.4.2"
+
+[tool.poetry.group.dataops.dependencies]
+faker = "^24.4.0"
+
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+dev-start = "my_package:dev_start_func"
