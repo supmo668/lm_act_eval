@@ -1,0 +1,33 @@
+name: Publish Python Package to Test PyPI
+
+on:
+  push:
+    branches:
+      - main  
+      # Or any other branch you'd like to trigger the workflow
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'  # Adjust as needed
+
+    - name: Install Poetry
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+
+    - name: Configure Poetry
+      run: |
+        $HOME/.local/bin/poetry config repositories.testpypi https://test.pypi.org/legacy/
+        $HOME/.local/bin/poetry config pypi-token.testpypi ${{ secrets.TEST_PYPI_API_TOKEN }}
+
+    - name: Build and publish to Test PyPI
+      run: |
+        $HOME/.local/bin/poetry build
+        $HOME/.local/bin/poetry publish --repository testpypi
+

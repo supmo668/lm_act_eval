@@ -34,11 +34,15 @@ Before running evaluations, ensure to set up necessary tokens and credentials as
 
 ## Defining Evaluations with Hydra
 
-Hydra allows for modular and flexible configuration of evaluations. An example configuration directory structure is provided below:
+Hydra allows for modular and flexible configuration of evaluations. The configuration system has been updated to provide more granular control over the evaluation process, including data sourcing, feature extraction, logging, and metrics calculation.
+
+### Updated Configuration Structure
+
+An example updated Hydra configuration directory structure and files would be as follows:
 
 ```plaintext
 <ENTRY_CONFIG>.yaml
-<Name of project>
+
 eval_configuration.yaml
 type/
 comparator.yaml
@@ -48,76 +52,79 @@ metrics.yaml
 
 ### Configuration Example
 
-A sample Hydra configuration file structure for (`<your_entry_configuration>.yaml`) might look like this:
+A sample updated Hydra configuration for defining evaluations (`<your_entry_configuration>.yaml`) might include:
+
+```yaml
+├── <name of the project (e.g. OpenTable)>
+│ ├── default.yaml
+│ └── <name of the mode (e.g. sft)>
+│ ├── _group_.yaml
+│ └── default.yaml
+├── <your_entry_configuration>.yaml
+```
+
+The detailed configuration components have been enriched to accommodate a wider array of evaluation scenarios:
 
 ```yaml
 ├── <name of the project (e.g. OpenTable)>
 │   ├── default.yaml
 │   └── <name of the mode (e.g. sft)>
-│       ├── _group_.yaml
+│       ├── \_group\_.yaml
 │       └── default.yaml
-├── <your_entry_configuration>.yaml
-```
+├── <your\_entry\_configuration>.yaml
+\```
 
-#### Detailed Configuration Components
+The detailed configuration components have been enriched to accommodate a wider array of evaluation scenarios:
 
-**`<your_entry_configuration>.yaml`**
-specifies the following is a `eval` task and in the settings speicify eval type to be `sft`
-
-```yaml
-# config.yaml
-defaults:
-  - _self_
-  - opentable/default@eval
-# opentable/default.yml
-defaults:
-  - _self_
-  - sft: default
-```
-In the `opentable/sft/default.yml` you may specify the detail of the data and evaluation settings 
-
-```yaml
+\```yaml
 trajectory: 
-  args: 
-    path: .cache/five-star-trajectories/csv/data+gptv.csv
+  data: 
+    path: lm\_act\_eval/.cache/five-star-trajectories/csv/data+gptv-eligible.csv
     columns:
-      y: ground_truth
-      y_': GPTV response
-      # ... other important input fields
-      extract_fs:
-      - action: extract_action
-      - thought: extract_thought
-      - explanation: extract_explanation
-
+      y: ground\_truth
+      y\_': GPTV\_generations
+    extract\_fs:
+      QUERY:
+        QUERY:
+      screenshot:
+        screenshot:
+      GOAL:
+        chat\_completion\_messages: parse\_completion.parse\_content
+      explanation: 
+        <explanation_field>: <name of function for extraction>
+    logging:
+      wandb:
+        project: opentable
+        result: lm\_act\_eval-run
+      braintrust:
+        project: multion\_opentable
   comparator:
-    gptv:
+    gpt-v:
       model: gpt-4-vision-preview
-      max_token: 300
-      img_fidelity: high
-      
+      max\_token: 300
+      img\_fidelity: high
   metrics:
-    edit_distance:
-      on: actions
-      
-    bleu:
-      on: explanation
-      
-    llm_relevancy:
-      on: explanation
+    gpt-v:
+      inputs:
+        - GOAL
+        - QUERY
+        - screenshot
+    llm\_relevancy:
+      - explanation
 ```
 
-## Current Support
+### Current Support
 
-### Evaluation Data Formats
+#### Evaluation Data Formats
 
-1. Pre-generated DataFrames/datasets.
-2. Hugging Face (HF) models repository
-### Metrics
+Pre-generated DataFrames/datasets.
+Hugging Face (HF) models repository.
+#### Metrics
 
 Levenshtein Distance (AutoEval)
 BLEU score
 Contextual Precision test (DeepEval)
-
-### Comparators/Benchmark Available
+LLM Relevancy
+#### Comparators/Benchmark Available
 
 GPT-V

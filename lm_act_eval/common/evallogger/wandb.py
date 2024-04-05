@@ -12,7 +12,8 @@ class WandbLogger(BaseLogger):
         else:
             raise TypeError("Data must be a pandas DataFrame.")
 
-        artifact = wandb.Artifact(artifact_name, type="dataset")
+        artifact = wandb.Artifact(
+            artifact_name, type="dataset")
         artifact.add(wandb_table, table_name)
         artifact.add_file(filename)
         
