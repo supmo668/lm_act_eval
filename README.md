@@ -72,47 +72,47 @@ The detailed configuration components have been enriched to accommodate a wider 
 ├── <name of the project (e.g. OpenTable)>
 │   ├── default.yaml
 │   └── <name of the mode (e.g. sft)>
-│       ├── \_group\_.yaml
+│       ├── _group_.yaml
 │       └── default.yaml
-├── <your\_entry\_configuration>.yaml
-\```
+├── <your_entry_configuration>.yaml
+```
 
 The detailed configuration components have been enriched to accommodate a wider array of evaluation scenarios:
 
-\```yaml
+```yaml
 trajectory: 
   data: 
-    path: lm\_act\_eval/.cache/five-star-trajectories/csv/data+gptv-eligible.csv
+    path: lm_act_eval/.cache/five-star-trajectories/csv/data+gptv-eligible.csv
     columns:
-      y: ground\_truth
-      y\_': GPTV\_generations
-    extract\_fs:
+      y: ground_truth
+      y_': GPTV_generations
+    extract_fs:
       QUERY:
         QUERY:
       screenshot:
         screenshot:
       GOAL:
-        chat\_completion\_messages: parse\_completion.parse\_content
+        chat_completion_messages: parse_completion.parse_content
       explanation: 
         <explanation_field>: <name of function for extraction>
     logging:
       wandb:
         project: opentable
-        result: lm\_act\_eval-run
+        result: lm_act_eval-run
       braintrust:
-        project: multion\_opentable
+        project: multion_opentable
   comparator:
     gpt-v:
       model: gpt-4-vision-preview
-      max\_token: 300
-      img\_fidelity: high
+      max_token: 300
+      img_fidelity: high
   metrics:
     gpt-v:
       inputs:
         - GOAL
         - QUERY
         - screenshot
-    llm\_relevancy:
+    llm_relevancy:
       - explanation
 ```
 

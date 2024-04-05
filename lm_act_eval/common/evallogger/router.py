@@ -39,7 +39,8 @@ if __name__=="__main__":
     logger_router = LoggerRouter(config_path='config.yaml')
 
     # Example data series or DataFrame
-    data_series = [pd.Series({'input': 'Example input', 'output': 'Example output'})]
+    data_series = [pd.Series({
+        'input': 'Example input', 'output': 'Example output'})]
 
     # Log the data to all initialized loggers
     for logger_name in logger_router.loggers.keys():
