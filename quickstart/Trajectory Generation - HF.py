@@ -105,10 +105,10 @@ load_dotenv()
 wandb.login()
 run = wandb.init(
   project="trajectory_eval", entity="multion-agi",
-  name=f"opentable-{model_name}", reinit=True)
+  name=f"opentable-{model_save_name}", reinit=True)
 
 # %%
-opentable_artifact = wandb.Artifact(f"opentable_trajectories_eval-{model_name}", type="dataset")
+opentable_artifact = wandb.Artifact(f"opentable_trajectories_eval-{model_save_name}", type="dataset")
 # opentable_table = wandb.Table(dataframe=traj_df_new)
 eval_generation = wandb.Table(dataframe=traj_df)
 #

@@ -7,7 +7,8 @@ from transformers import (
     Blip2ForConditionalGeneration,
     Blip2Processor,
 )
-from ...openai.vision import GPTV
+from lm_act_eval.evaluation_harness.openai.vision.gptv import GPTV
+from lm_act_eval.evaluation_harness.openai.vision.gptv import GPTV 
 
 def get_captioning_fn(
     device, dtype, model_name: str = "Salesforce/blip2-flan-t5-xl"

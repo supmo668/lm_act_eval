@@ -1,6 +1,6 @@
 import pandas as pd
 import pytest
-from lm_act_eval.evaluation_harness.openai.vision.evaluator import GPTVEvaluator
+from lm_act_eval.evaluation_harness.openai.vision.evaluator import GPTVScorer
 
 def test_gptv_evaluator():
     # Set up test data
@@ -20,7 +20,7 @@ def test_gptv_evaluator():
     })
 
     # Create an instance of the Evaluator
-    evaluator = GPTVEvaluator()
+    evaluator = GPTVScorer()
 
     # Run the evaluator
     evaluation_results = evaluator(df)

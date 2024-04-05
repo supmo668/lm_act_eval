@@ -10,5 +10,3 @@ class AgentAction:
   goal_text: str
   def from_text():
     pass
-  
-  

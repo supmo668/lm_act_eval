@@ -6713,6 +6713,17 @@ socks = ["pysocks (>=1.5.6,!=1.5.7,<2.0)"]
 zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
+name = "validators"
+version = "0.28.0"
+description = "Python Data Validation for Humans™"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "validators-0.28.0-py3-none-any.whl", hash = "sha256:e0184691dea3ba82b52c161ba81d3ec1d8be8da9609f0137d1430b395b366521"},
+    {file = "validators-0.28.0.tar.gz", hash = "sha256:85bc82511f6ccd0800f4c15d8c0dc546c15e369640c5ea1f24349ba0b3b17815"},
+]
+
+[[package]]
 name = "vertexai"
 version = "1.43.0"
 description = "Please run pip install google-cloud-aiplatform to use the Vertex SDK."
@@ -7274,4 +7285,4 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "1dfbbaecabaa0e2f15e5b9c5d99bbb9c8d5b4a32e327664c622eb7ff3331e68e"
+content-hash = "796c74edf73158bc5a7ae4476e44ed04a2f4d710585ab868154004675003e610"

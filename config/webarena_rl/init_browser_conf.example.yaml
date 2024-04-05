@@ -1,0 +1,14 @@
+visualwebarena:
+  HEADLESS: True
+  SLOW_MO: 0
+
+params:
+  sites:
+    SiteA:
+      slug: "site_a"
+      url: "http://example.com/sitea"
+      username: "user_example"
+      password: "pass_example"
+      token: "token_example"
+
+    # Similar structure for other sites with sensitive info hidden or replaced

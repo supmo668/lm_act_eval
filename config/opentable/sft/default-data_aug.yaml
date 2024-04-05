@@ -11,6 +11,7 @@ trajectory:
         screenshot:
       GOAL:
         chat_completion_messages: parse_completion.parse_content
+    
     logging:
       # log as table by default
       project: opentable

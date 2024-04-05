@@ -23,6 +23,15 @@ class FinetuneEvaluator:
         eval_dataset: Dataset,
         evaluate_config: argparse.Namespace,
     ):
+        """
+        Initialize the class with the provided tokenizer, model, evaluation dataset, and evaluation configuration.
+        
+        Parameters:
+            tokenizer (PreTrainedTokenizerBase): The tokenizer to be used.
+            model (PreTrainedModel): The model to be used.
+            eval_dataset (Dataset): The evaluation dataset.
+            evaluate_config (argparse.Namespace): The configuration for evaluation.
+        """
         self.tokenizer = tokenizer
         self.model = model
         self.eval_dataset = eval_dataset

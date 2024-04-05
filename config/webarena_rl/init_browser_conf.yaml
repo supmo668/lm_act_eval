@@ -4,11 +4,13 @@ browse:
 
 params:
   sites:
-    SiteA:
-      slug: "site_a"
-      url: "http://example.com/sitea"
-      username: "user_example"
-      password: "pass_example"
-      token: "token_example"
+    OPENTABLE:
+      slug: "opentable"
+      token: "${OPENTABLE}"
+      username: ""
+      password: ""
+      url: "${OPENTABLE}/"
+      reset_token: ""
+      exact_match: True
 
     # Similar structure for other sites with sensitive info hidden or replaced

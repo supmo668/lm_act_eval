@@ -13,10 +13,13 @@ trajectory:
         chat_completion_messages: parse_completion.parse_content
     logging:
       # log as table by default
-      project: opentable
-      result: lm_act_eval-run
-      hugging:
-        space: multion-agi
+      wandb:
+        project: opentable
+        result: lm_act_eval-run
+      braintrust:
+        project: multion_opentable
+      # hf:
+      #   space: multion-agi
 
   comparator:
     gpt-v:
@@ -29,7 +32,7 @@ trajectory:
       inputs:
         - GOAL
         - QUERY
-        - screenshots
+        - screenshot
       args:
     # edit_distance:
     #   - actions

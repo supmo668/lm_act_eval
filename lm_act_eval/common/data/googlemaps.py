@@ -2,11 +2,16 @@ import googlemaps
 from datetime import datetime
 import os
 import time
+import random
+
+from dotenv import load_dotenv
+load_dotenv()
 
 class GooglePlacesClient:
-    def __init__(self, api_key):
+    def __init__(self):
         """Initialize the Google Places client with a provided API key."""
-        self.gmaps = googlemaps.Client(key=api_key)
+        assert "GOOGLE_PLACES_API_KEY" in os.environ, "Please ensure `GOOGLE_PLACES_API_KEY` api key is available"
+        self.gmaps = googlemaps.Client(key=os.getenv("GOOGLE_PLACES_API_KEY"))
 
     def fetch_restaurants(self, location, radius=1000):
         """Fetch restaurant names within a given radius of a location.
@@ -54,9 +59,10 @@ class GooglePlacesClient:
         """
         return [place['name'] for place in places_result.get('results', [])]
 
+        
 if __name__ == "__main__":
     API_KEY = os.getenv('GOOGLE_PLACES_API_KEY', 'YOUR_API_KEY')  # Preferably set your API key as an environment variable
-    client = GooglePlacesClient(API_KEY)
+    client = GooglePlacesClient()
     
     # Example usage: Fetching restaurants near New York City
     restaurants = client.fetch_restaurants(location='40.7128,-74.0060')  # Latitude and longitude of New York City

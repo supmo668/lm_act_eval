@@ -8,8 +8,6 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-# External dependency, directly related to poetry itself
-poetry = {git = "https://github.com/python-poetry/poetry.git"}
 
 # Core dependencies, sorted alphabetically for readability
 beartype = "0.17.2"
@@ -29,6 +27,7 @@ PyYAML = "6.0.1"
 scikit-image = "0.22.0"
 torch = "2.2.1"
 wandb = "0.16.4"
+validators = "^0.28.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^6.0" # Development dependency
@@ -55,6 +54,8 @@ lm_eval = "0.4.2"
 [tool.poetry.group.dataops.dependencies]
 faker = "^24.4.0"
 
+[tool.poetry.dev-dependencies]
+poetry = { git = "https://github.com/python-poetry/poetry.git" }
 
 [build-system]
 requires = ["poetry-core"]
