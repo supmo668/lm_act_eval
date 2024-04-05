@@ -3,8 +3,7 @@ name: Publish Python Package to Test PyPI
 on:
   push:
     branches:
-      - main  
-      # Or any other branch you'd like to trigger the workflow
+      - main  # Or any other branch you'd like to trigger the workflow
 
 jobs:
   build-and-publish:
@@ -26,8 +25,15 @@ jobs:
         $HOME/.local/bin/poetry config repositories.testpypi https://test.pypi.org/legacy/
         $HOME/.local/bin/poetry config pypi-token.testpypi ${{ secrets.TEST_PYPI_API_TOKEN }}
 
+    - name: Automatically update package version
+      run: |
+        $HOME/.local/bin/poetry version patch
+        git config --global user.name 'github-actions'
+        git config --global user.email 'github-actions@github.com'
+        git commit -am "Increment version [skip ci]"
+        git push
+
     - name: Build and publish to Test PyPI
       run: |
         $HOME/.local/bin/poetry build
         $HOME/.local/bin/poetry publish --repository testpypi
-

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "lm_act_eval"
-version = "0.1.0"
+version = "0.1.1"
 description = "Evaluation Harness for on/off-line llm web actions"
 authors = ["multion_matthew"]
 license = "Apache2.0"
