@@ -1,4 +1,4 @@
-Given the following browser DOM, your task is to analyze and understand the reservation confirmation page. You are to provide a function to extract the following information from the DOM, that are generally able to achive the following:
+Given the following browser html of the URL of the following format: if logged in, `https://www.opentable.com/booking/confirmation?availabilityToken=eyJ2IjoyLCJtIjowLCJwIjowLCJjIjozNjk5Nzc2LCJzIjowLCJuIjowfQ&correlationId=96f63961-91a9-4892-9cc1-b4830a1350db&creditCardRequired=false&dateTime=2024-04-04T23%3A45%3A00&partySize=4&points=100&pointsType=Standard&resoAttribute=unselected&rid=118723&slotHash=1606916495&isModify=false&isMandatory=false&cfe=true&tableCategory=counter&diningAreaId=1&confirmationNumber=2109804202&securityToken=017C4rkS8WEMaXIOb8hH-wE0SNdKwilEAG2PNxSCd_-0w1` and if not logged in is `https://www.opentable.com/booking/confirmation?availabilityToken=eyJ2IjoyLCJtIjowLCJwIjowLCJjIjo2LCJzIjowLCJuIjowfQ&correlationId=881c22e0-c761-4cdb-a08f-3d3d8b1b5adf&creditCardRequired=false&dateTime=2024-04-05T23%3A15%3A00&partySize=4&points=100&pointsType=Standard&resoAttribute=counter&rid=118723&slotHash=3065447236&isModify=false&isMandatory=false&cfe=true&tableCategory=counter&diningAreaId=1&confirmationNumber=2109804205&securityToken=01vrn4BWf7VEFDMiCGf0KYEm6Pwtiv9UxEd3lU82VCXRo1`. First, analyze and understand the reservation confirmation html page and provide a function that takes the base URL `https://www.opentable.com/booking/confirmation` and other user , sythesize the url before requesting the relevant page to extract the following information from the html, that are generally able to achive the following:
 * Extract the restaurant name
 * Extract status of reservation
 * Number of people in the reservation
@@ -10,6 +10,7 @@ The ground truth to the above for the following given DOM in corresponding order
 * 4
 * Apr 4, 11:45PM
 * Matthew Mo
+The async function is expected to use some of the following tool kits: API requests , re, playwright or beautiful soup. Use the best tool with the most concise syntax. Ensure name extraction is correct and match the given ground truth.
 ```
 <!DOCTYPE html>
 <!-- saved from url=(0501)https://www.opentable.com/booking/confirmation?availabilityToken=eyJ2IjoyLCJtIjowLCJwIjowLCJjIjozNjk5Nzc2LCJzIjowLCJuIjowfQ&correlationId=96f63961-91a9-4892-9cc1-b4830a1350db&creditCardRequired=false&dateTime=2024-04-04T23%3A45%3A00&partySize=4&points=100&pointsType=Standard&resoAttribute=unselected&rid=118723&slotHash=1606916495&isModify=false&isMandatory=false&cfe=true&tableCategory=counter&diningAreaId=1&confirmationNumber=2109804202&securityToken=017C4rkS8WEMaXIOb8hH-wE0SNdKwilEAG2PNxSCd_-0w1 -->
