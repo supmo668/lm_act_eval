@@ -9,6 +9,8 @@ from lm_act_eval.evaluation_harness.helper_functions import function_registry
 
 import warnings
 
+from lm_act_eval.evaluation_harness.helper_functions import function_registry
+extract_reservation_info = function_registry.get('opentable_extract_reservation_details')
 
 @metric_registry.register("opentable_html")
 class opentable_reservation_html(DFTableScorer):
@@ -40,9 +42,12 @@ class opentable_reservation_html(DFTableScorer):
             pd.DataFrame: A modified dataframe with additional columns for each reservation detail.
         """
         # Apply extract_reservation_info to each row in the 'DOM' column
+        if self.config.evaluate_group_last:
+            df = self.get_last_in_trajectory(df, **self.config.evaluate_group_last)
         df_details = df['DOM'].apply(lambda x: extract_reservation_info(x))
         details_df = pd.DataFrame(df_details.tolist(), index=df.index)
-        
+        # Rename columns to have 'predicted_' prefix
+        details_df = details_df.rename(columns=lambda x: 'predicted_' + x)
         # Concatenate the new details dataframe with the original dataframe
         df = pd.concat([df, details_df], axis=1)
         return df
@@ -64,13 +69,15 @@ class opentable_reservation_html(DFTableScorer):
         # Iterate over configured column pairs from self.config assumed to be provided as list of dicts
         for column_pair in self.config['column_pairs']:
             ref_col = column_pair['ref']
-            pred_col = column_pair['pred']  # Use a predefined prediction column from the config
-            if ref_col not in df.columns:
-                warnings.warn(f"Reference column '{ref_col}' not found in DataFrame. Skipping this pair.")
+            pred_col = 'predicted_'+ ref_col  # Use a predefined prediction column from the config
+            if not (ref_col in df.columns or pred_col in df.columns):
+                warnings.warn(f"Reference or predicted column '{ref_col}' not found in DataFrame. Skipping this pair.")
                 continue  # Skip this iteration if the reference column does not exist
             col_name = f"{ref_col}_vs_{pred_col}"
             # Using apply to call the exact_match function on each row
             results[col_name] = df.apply(
                 lambda row: self.str_evaluator.exact_match(row[ref_col], row[pred_col]), axis=1
             ).mean()  # Calculating the mean to provide an overall accuracy metric for each column pair
-        return results
+        self._score_series = pd.Series(results)
+        # Calculate and return the overall average score
+        return self._score_series.mean() if not self._score_series.empty else 0.0

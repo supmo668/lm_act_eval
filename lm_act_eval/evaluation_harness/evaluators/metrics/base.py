@@ -36,18 +36,22 @@ class DFTableScorer(BaseScorer):
     def __init__(self, config: OmegaConf, *args, **kwargs):
         self.config = config
         self.process_df = pd.DataFrame()
-    
     @property
     def eval_prompt(self):
       # Custom logic to generate a dynamic prompt based on the given objective
         return ""
-
+    
+    def get_last_in_trajectory(self, df, group, idx):
+      return df.loc[df.groupby(group)[idx].idxmax()]
+    
     @abstractmethod
     def evaluate(self) -> Any:
       assert hasattr(self, 'result')
       
     def is_eligible(self, row):  
       # Apply the function to each URL in the column
+      if self.config.evaluate_group_last:
+        row 
       return True
       
     def _process(self):

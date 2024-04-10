@@ -3,17 +3,18 @@
 # Metrics
 ## OpenTable
 ### Usage
-To utilize the opentable_reservation_html metric, you need to initialize it with a configuration dictionary specifying the pairs of columns to be compared and any other necessary configuration settings.
+To utilize the opentable_reservation_html metric, initialize it with a configuration dictionary specifying the columns to be compared and any necessary configuration settings.
 
 Configuration Example
+```yaml
+    evaluate_group_last: true
+    inputs:
+    - DOM
+    column_pairs:
+    - restaurant_name
+    - status
 ```
-config = {
-    'column_pairs': [
-        {'ref': 'restaurant_name', 'pred': 'predicted_restaurant_name'},
-        {'ref': 'status', 'pred': 'predicted_status'}
-    ]
-}
-```
+**evaluation_group_last** suggest only evaluate the last based in the group of trajectory
 
 ### Metric Initialization and Usage
 

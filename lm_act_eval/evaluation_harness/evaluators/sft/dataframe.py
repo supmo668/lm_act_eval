@@ -251,7 +251,9 @@ class DataFrameEvaluator(BaseEvaluator):
 
     def evaluate(self):
         self.evaluations = dict()
+        # Iterate over metrics to be evaluated
         for scorer_name, (scorer, inputs) in zip(self.metric_configs, cfg_to_evaluator(self.metric_configs)):   
+            # use fields 
             input_fields = [c for c in self.df.columns if c.lower().startswith(inputs)]
             self.evaluations[scorer_name] = scorer(self.df[input_fields])
         
