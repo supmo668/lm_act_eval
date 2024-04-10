@@ -39,6 +39,8 @@ trajectory:
       evaluate_group_last: action_idx
       inputs:
         - HTML
+      column_pairs:
+        - restaurant_name
       args:
         -
     gpt-v:
