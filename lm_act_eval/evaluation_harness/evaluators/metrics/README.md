@@ -17,7 +17,7 @@ config = {
 
 ### Metric Initialization and Usage
 
-`from your_metric_module import opentable_reservation_html`
+`from lm_act_eval.evaluation_harness.evaluators.metrics.opentable import opentable_reservation_html`
 
 ### Initialize the metric
 ```
