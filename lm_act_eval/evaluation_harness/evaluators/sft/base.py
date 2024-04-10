@@ -53,7 +53,7 @@ class BaseEvaluator:
     @abstractmethod
     def __call__(self, eval_dataset: Optional[Dataset | pd.DataFrame]=None) -> dict | pd.DataFrame:
         pass
-    
+    @abstractmethod
     def _process_input(self, input_data:Optional[Dataset | pd.DataFrame]=None):
         return None
     def evaluate(self) -> Union[dict, pd.DataFrame]:

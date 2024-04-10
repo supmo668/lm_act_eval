@@ -21,6 +21,9 @@ from .shopping import (
   shopping_get_sku_latest_review_author, shopping_get_sku_latest_review_rating,
   shopping_get_sku_latest_review_text
 )
+from .opentable import (
+  opentable_extract_reservation_details
+)
 
 __all__ = [
   "PseudoPage",
@@ -37,7 +40,9 @@ __all__ = [
   "shopping_get_product_price", "shopping_get_rating_as_percentage",
   "shopping_get_sku_latest_review_author",
   "shopping_get_sku_latest_review_rating",
-  "shopping_get_sku_latest_review_text"
+  "shopping_get_sku_latest_review_text",
+  #
+  "opentable_extract_reservation_details"
 ]
 
 from .utils import FunctionRegistry

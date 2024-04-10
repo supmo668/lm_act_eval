@@ -102,6 +102,30 @@ def extract_commands(action: str) -> list[str]:
         return action[objective_start:objective_end].strip().split("\n")
     return []
 
+@function_registry.register('extract_user_info')
+def extract_user_info(details_string):
+    """
+    e.g. 'userAddress: 9926 Tesson Creek Estates Rd;\nuserEmail: edmund.martin.mills@gmail.com;\nuserName: Edmund Mills;\nuserNotes: I am vegan, never order me any foods containing animal products.\n\nIf I tell you to buy something, get the purchase ready to execute, then check in with me about making the purchase.;'
+    """
+    # Regular expressions to capture relevant data
+    name_regex = r"userName: (\w+) (\w+);"
+    # Try to extract the name parts
+    name_match = re.search(name_regex, details_string)
+    if name_match:
+        first_name, last_name = name_match.groups()
+    else:
+        first_name, last_name = None, None
+    
+    # Return None for unspecified fields
+    return {
+        "restaurant_name": None,
+        "status": None,
+        "num_people": None,
+        "date_time": None,
+        "first_name": first_name,
+        "last_name": last_name,
+    }
+
 @function_registry.register('parse_completion')
 class ParseChatCompletion:
     """

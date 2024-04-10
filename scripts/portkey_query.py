@@ -11,7 +11,7 @@ load_dotenv()
 
 # Initialize Portkey with your API and virtual keys from environment variables
 portkey = AsyncPortkey(
-    api_key=os.getenv("PORTKEY_API_KEY"),  # Load Portkey API key from environment variables
+    api_key=os.getenv("GEMINI_VIRTUAL_KEY"),  # Load Portkey API key from environment variables
     virtual_key=os.getenv("VIRTUAL_KEY")   # Load virtual key for Google from environment variables
 )
 

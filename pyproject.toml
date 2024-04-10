@@ -29,6 +29,7 @@ torch = "2.2.1"
 wandb = "0.16.4"
 validators = "^0.28.0"
 portkey-ai = "^1.2.3"
+aiomisc = "^17.5.4"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^6.0" # Development dependency

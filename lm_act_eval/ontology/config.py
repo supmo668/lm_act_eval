@@ -1,6 +1,5 @@
 import dataclasses
-from typing import List, Literal
-
+from typing import List, Literal, Dict
 
 @dataclasses.dataclass
 class gptv_config:

@@ -8,8 +8,6 @@ import click
 GlobalHydra.instance().clear()
 initialize(config_path="../config")
 
-@click.command()
-@click.argument('name', required=False, default='trajectory_eval-dev')
 def init_conf(name):
     """
     Initializes and prints the configuration based on the provided name.
@@ -25,6 +23,11 @@ def init_conf(name):
     # from lm_act_eval.evaluation_harness.handlers import handle_sft
     # handle_sft(cfg)
     return cfg
+
+@click.command()
+@click.argument('name', required=False, default='trajectory_eval-dev')
+def main(name):
+    init_conf(name)
 
 if __name__ == "__main__":
     init_conf()  # Invokes the command line interface

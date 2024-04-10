@@ -16,12 +16,11 @@ from .constants import ENDPOINTS
 
 from pathlib import Path
 
-from .config import gptv_config
+from lm_act_eval.ontology.config import gptv_config
 
 DEFAULT_GPTV_CONFIG = gptv_config()
 
 logger = logging.getLogger(__name__)
-
 
 class GPTV(Pipeline):
     def __init__(self, config: dict | gptv_config = DEFAULT_GPTV_CONFIG):

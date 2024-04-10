@@ -10,7 +10,7 @@ from typing import *
 from tqdm.auto import tqdm
 import re 
 
-from .config import gptv_config
+from lm_act_eval.ontology.config import gptv_config
 from .prompts import DEFAULT_EVAL_PROMPT, GPTV_EVAL_PROMPTS
 
 from lm_act_eval.evaluation_harness.helper_functions.multion import (
@@ -38,8 +38,7 @@ class GPTVScorer(DFTableScorer):
           self.gptv = GPTV(gptv_config)
         else: 
           self.gptv = GPTV(**config)
-        self.required_cols = ['QUERY', 'GOAL', 'screenshot']
-    
+        self.config = config    
     
     def _process(self):
       assert all([c in self.input_df.columns for c in self.required_cols]), f"Missing all required columns: {self.required_cols}"
@@ -55,7 +54,7 @@ class GPTVScorer(DFTableScorer):
       # field involved:
         # QUERY
         # GOAL
-      return DEFAULT_EVAL_PROMPT
+      return GPTV_EVAL_PROMPTS.get('multion_trajectory')
     
     def _synthesize_and_evaluate(self, row):
       """
@@ -85,13 +84,13 @@ class GPTVScorer(DFTableScorer):
       return evals
 
     def _process_result(self, evals):
-      return evals
+      return evals['Score'].mean()
     
     def __call__(self, dataset: Union[pd.DataFrame], *args: Any, **kwds: Any) -> Any:
       self.input_df = dataset
       self._process()
-      evals = self.evaluate()
-      return self._process_result(evals)
+      self.evals = self.evaluate()
+      return self._process_result(self.evals)
 
 # Example usage
 if __name__ == "__main__":

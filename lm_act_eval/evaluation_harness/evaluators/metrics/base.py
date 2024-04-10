@@ -19,11 +19,6 @@ class BaseScorer:
             **kwargs: Arbitrary keyword arguments.
         """
         self.config = config
-    
-    @property
-    def eval_prompt(self):
-      # Custom logic to generate a dynamic prompt based on the given objective
-        return ""
 
     @abstractmethod
     def evaluate(self) -> Any:
@@ -67,5 +62,9 @@ class DFTableScorer(BaseScorer):
     def __call__(self, dataset: Union[pd.DataFrame], *args: Any, **kwds: Any) -> Any:
       self.input_df = dataset
       self._process()
-      self.evaluate()
+      self.evals = self.evaluate()
       return self._process_result()
+    
+    @property
+    def evaluations(self):
+      return self.evals

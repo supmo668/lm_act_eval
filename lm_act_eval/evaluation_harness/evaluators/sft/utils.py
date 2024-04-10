@@ -119,7 +119,8 @@ from lm_act_eval.evaluation_harness.evaluators.registry import metric_registry
 
 from typing import *
 from .base import BaseEvaluator
-def cfg_to_function(funct_pairs: OmegaConf | Dict[str, Dict[str, str]]) -> Generator[Tuple[Tuple[str, str], str], None, None]:
+def cfg_to_function(
+    funct_pairs: OmegaConf | Dict[str, Dict[str, str]]) -> Generator[Tuple[Tuple[str, str], str], None, None]:
     """
     A function that processes a function query along with a function pair and returns a tuple containing a source field, target field, and function name.
 

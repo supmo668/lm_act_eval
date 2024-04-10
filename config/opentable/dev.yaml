@@ -1,4 +1,4 @@
 # opentable/conf.yaml
 defaults:
   - _self_
-  - sft: default-data_aug
+  - sft: default-opentable

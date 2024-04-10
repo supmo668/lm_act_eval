@@ -16,7 +16,7 @@ from lm_act_eval.evaluation_harness.helper_functions import (
 from .numeric import NumericEvaluator
 
 
-from . import USER_AGENT_HEADERS
+from .. import USER_AGENT_HEADERS
 from lm_act_eval.evaluation_harness.evaluators.webarena_rl.base import Evaluator, Trajectory
 
 @beartype

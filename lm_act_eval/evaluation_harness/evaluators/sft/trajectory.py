@@ -1,5 +1,6 @@
 from typing import *
 import pandas as pd
+import wandb
 
 from lm_act_eval.evaluation_harness.evaluators.registry import evaluator_registry
 
@@ -27,21 +28,42 @@ def extract_trajectory(
   )
   return sorted_grouped_texts
 
-from .dataframe import DataFrameEvaluator
-
+from .dataframe import DataFrameEvaluator, AsyncDataFrameEvaluator
 @evaluator_registry.register("sft.trajectory")
-class TableTrajectoryEvaluator(DataFrameEvaluator):
+class AsyncTableTrajectoryEvaluator(AsyncDataFrameEvaluator):
     def __init__(self, config, *args, **kwargs):
         """
         Handles evaluation of all the metrics in the given evaluation track
         """
         super().__init__(config)
         
-    def _process_result(self, evals):
-        return evals
+    def log_artifacts(self):
+        """Create and log a wandb db artifact or table object."""
+        log_config = self.config.data.logging
+        if self.results is not None:
+            table = wandb.Table(data=[list(self.results.values())], columns=list(self.results.keys()))
+            self.artifact = wandb.log({"evaluation_results": table})
+        else:
+            print("No results to log.")
+            
+class TableTrajectoryEvaluator(DataFrameEvaluator):
+    def __init__(self, config, *args, **kwargs):
+        """
+        Handles evaluation of all the metrics in the given evaluation track
+        """
+        super().__init__(config)
+        self._process_input(self.input_df)
+        
+    def log_artifacts(self):
+        """Create and log a wandb db artifact or table object."""
+        log_config = self.config.data.logging
+        if self.results is not None:
+            table = wandb.Table(data=[list(self.results.values())], columns=list(self.results.keys()))
+            self.artifact = wandb.log({"evaluation_results": table})
+        else:
+            print("No results to log.")
     
-    def _process(self):
-        return self.process_df
-    
-    def process_result(self, evals):
-        return evals
+    def __call__(self, input: Union[pd.DataFrame], *args: Any, **kwds: Any) -> Any:
+        self._process_input(input)
+        evals = self.evaluate()
+        return self.process_result(evals)
