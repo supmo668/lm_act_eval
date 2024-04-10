@@ -1,11 +1,6 @@
 trajectory: 
   data: 
     path: lm_act_eval/.cache/five-star-trajectories/csv/data.csv
-    columns:
-      trajectory_id: session_id
-      action_idx: idx_in_session
-      y: ground_truth
-      y_': GPTV_generations
     extract_fs:
       # target field:
         # src field
@@ -25,24 +20,19 @@ trajectory:
         result: lm_act_eval-run
       braintrust:
         project: multion_opentable
-
-  # benchmark:
-  #   gpt-v:
-  #     model: gpt-4-vision-preview
-  #     max_token: 300
-  #     img_fidelity: high
   
   metrics:
       # any fields starting with the same starting string (or match)
     opentable_html:
       # only evaluate last idx of the group
-      evaluate_group_last: action_idx
+      evaluate_group_last: 
+        group: session_id
+        idx: idx_in_session
       inputs:
-        - HTML
+        - DOM
       column_pairs:
         - restaurant_name
-      args:
-        -
+        - status
     gpt-v:
       inputs:
         - GOAL
