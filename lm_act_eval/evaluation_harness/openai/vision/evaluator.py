@@ -27,6 +27,8 @@ from lm_act_eval.evaluation_harness.helper_functions.multion import (
 from lm_act_eval.evaluation_harness.evaluators.registry import metric_registry
 from lm_act_eval.evaluation_harness.evaluators.metrics.base import DFTableScorer
 
+from lm_act_eval.ontology.inputs import GPTVScorerInput, Optional
+
 @metric_registry.register('gpt-v')
 class GPTVScorer(DFTableScorer):
     def __init__(self, config: OmegaConf, *args, **kwargs):
@@ -86,7 +88,7 @@ class GPTVScorer(DFTableScorer):
     def _process_result(self, evals):
       return evals['Score'].mean()
     
-    def __call__(self, dataset: Union[pd.DataFrame], *args: Any, **kwds: Any) -> Any:
+    def __call__(self, dataset: Union[GPTVScorerInput, pd.DataFrame], *args: Any, **kwds: Any) -> Any:
       self.input_df = dataset
       self._process()
       self.evals = self.evaluate()

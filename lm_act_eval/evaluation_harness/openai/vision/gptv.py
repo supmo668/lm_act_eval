@@ -18,6 +18,8 @@ from pathlib import Path
 
 from lm_act_eval.ontology.config import gptv_config
 
+from lm_act_eval.ontology.inputs import GPTVScorerInput, Optional
+
 DEFAULT_GPTV_CONFIG = gptv_config()
 
 logger = logging.getLogger(__name__)
@@ -163,7 +165,10 @@ class GPTV(Pipeline):
         # response.choices[0].message.content
         return response.choices[0].message.content
     
-    def __call__(self, *args):
+    def __call__(self, *args: Optional[Dict]):
+        """
+        calls the generate_completion method 
+        """
         return self.generate_completion(*args)
                 
 if __name__ == "__main__":
